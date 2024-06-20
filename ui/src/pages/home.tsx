@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { MoveRight } from "lucide-react";
 import { MosaicBg } from "@/components/ui/mosaic-bg";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const navigate = useNavigate();
   return (
     <div className="w-full h-screen relative overflow-hidden flex flex-col gap-2 justify-center items-center">
       <MosaicBg />
@@ -19,6 +21,7 @@ export default function Home() {
         variant={"expandIcon"}
         iconPlacement="right"
         Icon={MoveRight}
+        onClick={() => navigate("/dashboard")}
       >
         Get Started
       </Button>
