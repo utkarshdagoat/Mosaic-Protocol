@@ -1,11 +1,19 @@
-import './App.css'
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme-provider";
+
+import Home from "@/pages/home";
 
 function App() {
   return (
-    <>
-      <p className='font-mosaic text-primary'>Mosaic <span className='font-sans text-muted-foreground'>Protocol</span></p>
-    </>
-  )
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
