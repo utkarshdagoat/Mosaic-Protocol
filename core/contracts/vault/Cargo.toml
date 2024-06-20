@@ -52,6 +52,8 @@ cw2 = "1.1.0"
 schemars = "0.8.12"
 serde = { version = "1.0.183", default-features = false, features = ["derive"] }
 thiserror = "1.0.44"
+cw20 = "1.1.0"
+cw20-base = { version = "0.10.0", features = ["library"] }
 
 [dev-dependencies]
 cw-multi-test = "0.17.0"
