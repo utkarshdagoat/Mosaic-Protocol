@@ -21,7 +21,7 @@ export default function Home() {
         variant={"expandIcon"}
         iconPlacement="right"
         Icon={MoveRight}
-        onClick={() => navigate("/dashboard")}
+        onClick={() => navigate("/onboarding")}
       >
         Get Started
       </Button>
