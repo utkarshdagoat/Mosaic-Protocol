@@ -49,7 +49,6 @@ export default function OnboardStepper() {
         <Stepper
           initialStep={0}
           steps={steps}
-          
           className="w-[60%] justify-start"
         >
           {steps.map(({ label }, index) => {
