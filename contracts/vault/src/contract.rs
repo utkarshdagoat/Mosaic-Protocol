@@ -1,7 +1,7 @@
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    to_binary, Deps, DepsMut, Env, MessageInfo, QueryResponse, Response, StdError, Addr, Uint128,
+    to_binary, Deps, DepsMut, Env, MessageInfo, QueryResponse, Response, StdError, Addr, Uint128,BankMsg,Coin
 };
 use cw2::set_contract_version;
 
@@ -12,6 +12,7 @@ use crate::state::*;
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:token-vault";
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+const ONE_INT:Uint128 = Uint128::one();
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -48,7 +49,17 @@ pub mod execute {
     use cosmwasm_std::{CosmosMsg, WasmQuery};
 
     use super::*;
+    //Amount to deposit based on the time period and the amount of loan the person wants to take along with the collateralization ratio 
+    pub fn amount_to_deposit(deps: DepsMut,
+        _env: Env,
+        info: MessageInfo,
+        amount: Uint128)->Result<Uint128, ContractError> {
+            Ok(Uint128::new(10))
+        
+        
+    }
 
+    // Share represent the mUSD or USDC we have to return in exchange of the CONST the person has deposited in the vault
     pub fn execute_deposit(
         deps: DepsMut,
         env: Env,
@@ -73,7 +84,7 @@ pub mod execute {
         balance+=shares;
         BALANCE_OF.save(deps.storage, info.sender.clone(), &balance)?;
 
-        let transfer_from_msg=cw20::Cw20ExecuteMsg::TransferFrom { owner: info.sender.to_string(), recipient: env.contract.address.to_string(), amount };
+        let transfer_from_msg=cw20::Cw20ExecuteMsg::Mint { recipient: info.sender.to_string(),  amount };
         let msg=CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute { contract_addr: token_info.token_address.to_string(), msg: to_binary(&transfer_from_msg)?, funds: info.funds });
 
         Ok(Response::new().add_attribute("action", "deposit").add_message(msg))
@@ -101,11 +112,10 @@ pub mod execute {
         let msg=CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute { contract_addr: token_info.token_address.to_string(), msg: to_binary(&transfer_msg)?, funds: info.funds });
 
         Ok(Response::new().add_attribute("action", "withdraw").add_message(msg))
-
         
     }
-    
-  
+
+
     pub fn get_token_balance_of(
         deps: &DepsMut,
         user_address: Addr,
@@ -128,18 +138,85 @@ pub mod execute {
     
         Ok(Response::new().add_attribute("action", "give_Allowance").add_message(msg))
     }
-    
+
+
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> Result<QueryResponse, StdError> {
-    match msg {QueryMsg::GetTotalSupply{}=>query::get_total_supply(deps),
-    QueryMsg::GetBalanceOf { address } => query::get_balance_of(deps,address) }
+    match msg {
+    QueryMsg::GetTotalSupply{}=>query::get_total_supply(deps),
+    QueryMsg::GetBalanceOf { address } => query::get_balance_of(deps,address),
+    QueryMsg::GetStakeOnDeposit { address , timePeriod } => query::get_stake_on_deposit(deps,address,timePeriod),
+    QueryMsg::GetDynamicInterstRates { address } => query::get_dyanamic_interest_rates(deps,address),
+    QueryMsg::GetFixedInterstRates{}=>query::get_fixed_interest_ratio(deps)
+ }
 }
 
 pub mod query {
 
+    use core::time;
+
     use super::*;
+
+    pub fn get_stake_on_deposit(
+        deps: Deps,
+        addr: Addr,
+        time_period: Uint128,
+    )->Result<QueryResponse, StdError> {
+        let token_info=TOKEN_INFO.load(deps.storage)?;
+        let mut balance=BALANCE_OF.load(deps.storage, addr.clone()).unwrap_or(Uint128::zero());
+        //let balance_of=get_token_balance_of(&deps, info.sender.clone(), token_info.token_address.clone())?;
+        //time period should be in months
+        let const_ratio = Uint128::one();
+        let amount = balance/TOTAL_SUPPLY.load(deps.storage)? * time_period * const_ratio;
+        let reward = amount/time_period;
+         to_binary(&reward)
+        //this returns the total stake we would have to give to the person out of the total balance we have in our vault, if he deposited the tokens for one month based on time period the person has submitted us 
+        //now we can use the archaway js to simply return the value of stake we would have to send him when he pays the loan for that month
+        // we can give him the stake in the form of tokens he submitted us. 
+        // also can setup a constant here to get a proper value I have set it to 1 for now
+        }
+        
+
+
+    pub fn get_dyanamic_interest_rates(
+        deps: Deps,
+        addr: Addr
+    )-> Result<QueryResponse , StdError> {
+        let token_info=TOKEN_INFO.load(deps.storage)?;
+        let mut balance=BALANCE_OF.load(deps.storage, addr.clone()).unwrap_or(Uint128::zero());
+        //let balance_of=get_token_balance_of(&deps, info.sender.clone(), token_info.token_address.clone())?;
+        let contribution = balance/TOTAL_SUPPLY.load(deps.storage)?;
+         //aise to ye har baar zero aajega as int hona chaahiye 
+        // this represents the contribution of the user in the total balance of the vault
+        // from this contribution we can calcualte the dyanamic rate , and it will change with the time period(each month simply)
+        //here lambda would represent the long term average of the contribution of the user in the total balance of the vault
+        //Here we can take a pretty good approximation of considering the contribution variable to follow the bernoulli distribution for the case when our lambda is 1/2 
+        // * links to  distribution and how to calculate the rate of interest based on the bernoulli distribution * 
+        //also if the contirbution value becomes very small then we can also take that value to be as 
+        // now overcome this distribution challenge as we would want the person to get the interest rate according to his contribution , we would have to take a factor that negates the e^-lambda part of the poisson distribution 
+        // or we can simplify it to as 1 + lambda + lambda^2/2 
+        // so we take this as a dyanamic interest curve according to which we give the interest rate for each person 
+        // now simply our interest owuld be a constant that we choose (example 8%) * (the ratio of the curve and the poisson ditribution value )
+        //where the lambda would be replaced by the contribution value of the user
+        // this wont be applicable for the starting users though as we would have to take the average of the contribution of the users in the vault
+        // and then we can give the interest rate to the users based on the curve we have chosen
+
+        let dyanamic_interest_ratio = Uint128::new(10);
+        to_binary(&dyanamic_interest_ratio) 
+        // abhi constant bhej rha hun wahan js mei sahi krna hai iss calculation ko , kyonki yahan saara int mei ho rha hai
+
+    }
+
+    pub fn get_fixed_interest_ratio(
+        deps: Deps,
+
+    )-> Result<QueryResponse,StdError > {
+        to_binary(&FIXED_RATE.load(deps.storage).unwrap_or(Uint128::new(10)))
+    }
+    
+
 
     pub fn get_total_supply(deps: Deps) -> Result<QueryResponse, StdError> {
         let total_supply = TOTAL_SUPPLY.load(deps.storage)?;

@@ -1,10 +1,11 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::{Addr, Uint128};
-use cw_storage_plus::{Item, Map};
+use cw_storage_plus::{Item, Map ,};
 
 
 pub const TOTAL_SUPPLY: Item<Uint128> = Item::new("total_supply");
 pub const BALANCE_OF: Map<Addr,Uint128>=Map::new("balance_of");
+// Map of user addr => (loanIndex => timePeriod)
 
 
 #[cw_serde]
@@ -15,3 +16,4 @@ pub struct  TokenInfo{
 }
 
 pub const TOKEN_INFO: Item<TokenInfo> = Item::new("token_info");
+pub const FIXED_RATE: Item<Uint128> = Item::new("fixed_rate");

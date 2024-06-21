@@ -27,6 +27,20 @@ pub enum QueryMsg {
     #[returns(Uint128)]
     GetBalanceOf {
         address: Addr
-    }
+    },
+
+    #[returns(Uint128)]
+    GetStakeOnDeposit{
+        address: Addr,
+        timePeriod: Uint128
+    },
+
+    #[returns(Uint128)]
+    GetDynamicInterstRates{
+        address: Addr
+    },
+
+    #[returns(Uint128)]
+    GetFixedInterstRates{}
 }
 
