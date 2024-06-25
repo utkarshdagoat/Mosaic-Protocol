@@ -23,7 +23,7 @@ export default function LoginCard() {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useUserStore();
+  const { setUser } = useUserStore();
 
   const navigate = useNavigate();
   const { toast } = useToast();

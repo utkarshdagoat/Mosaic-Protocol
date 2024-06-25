@@ -1,6 +1,6 @@
 import styles from "./pages.module.css";
 import logo from "../assets/logo.svg";
-import LoginCard from "@/components/dashboard/login-card";
+import LoginCard from "@/components/login-card";
 
 export default function Login() {
   return (

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import leapLogo from "@/assets/leap.png" 
 
-export function GetLoan() {
+export default function GetLoan() {
   return (
     <>
       <Dialog>
