@@ -1,6 +1,9 @@
-import { InfoCardProps, InfoCard } from "./info-card";
-import CreditScore from "./credit-score";
+import {
+  InfoCardProps,
+  InfoCard,
+} from "@/components/dashboard/commons/info-card";
 import { useState } from "react";
+import Heading from "@/components/dashboard/commons/heading";
 
 export default function OverviewCards() {
   const [totalAssets, setTotalAssets] = useState("12500.45");
@@ -29,10 +32,13 @@ export default function OverviewCards() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-      {data.map((item, index) => (
-        <InfoCard key={index} {...item} />
-      ))}
+    <div>
+      <Heading>Overview</Heading>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {data.map((item, index) => (
+          <InfoCard key={index} {...item} />
+        ))}
+      </div>
     </div>
   );
 }
