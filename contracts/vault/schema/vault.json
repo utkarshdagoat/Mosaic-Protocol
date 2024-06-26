@@ -39,10 +39,10 @@
           "deposit": {
             "type": "object",
             "required": [
-              "amount"
+              "amount_out_collateral"
             ],
             "properties": {
-              "amount": {
+              "amount_out_collateral": {
                 "$ref": "#/definitions/Uint128"
               }
             },
@@ -60,10 +60,14 @@
           "withdraw": {
             "type": "object",
             "required": [
-              "shares"
+              "amount_in_collateral",
+              "amount_out_collateral"
             ],
             "properties": {
-              "shares": {
+              "amount_in_collateral": {
+                "$ref": "#/definitions/Uint128"
+              },
+              "amount_out_collateral": {
                 "$ref": "#/definitions/Uint128"
               }
             },

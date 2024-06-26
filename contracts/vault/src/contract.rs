@@ -117,8 +117,8 @@ pub mod execute {
         deps: DepsMut,
         _env: Env,
         info: MessageInfo,
-        amount_out_collateral: Uint128, // My stable coin
-        amount_in_collateral: Uint128,  // CONST
+        amount_in_collateral: Uint128, // My stable coin
+        amount_out_collateral: Uint128,  // CONST
     ) -> Result<Response, ContractError> {
         let token_info = TOKEN_INFO.load(deps.storage)?;
         let mut total_supply = TOTAL_SUPPLY.load(deps.storage)?;
@@ -151,7 +151,7 @@ pub mod execute {
             });
         }
         debt_incured -= amount_in_collateral;
-        DEBT_INCURRED.save(deps.storage, info.sender.clone(), &debt_incured);
+        DEBT_INCURRED.save(deps.storage, info.sender.clone(), &debt_incured)?;
 
         // Burn the stablecoin
         let transfer_msg = cw20::Cw20ExecuteMsg::BurnFrom {
@@ -165,7 +165,7 @@ pub mod execute {
             funds: info.funds,
         });
 
-        let MULTIPLIER: u128 = 1000000;
+        const MULTIPLIER: u128 = 1000000;
         let mut total_amount: u128 = amount_in_collateral.into();
         total_amount = total_amount * MULTIPLIER;
         // Transfer the funds from contract to user

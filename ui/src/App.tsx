@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
 import Onboarding from "./pages/onboarding";
+import Connect from "./pages/connect";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/connect" element={<Connect />} />
         </Routes>
       </Router>
     </ThemeProvider>

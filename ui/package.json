@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@archwayhq/arch3.js": "^0.7.0",
+    "@keplr-wallet/types": "^0.12.107",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.0",
     "@radix-ui/react-label": "^2.1.0",

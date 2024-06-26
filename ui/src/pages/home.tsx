@@ -62,7 +62,7 @@ export default function Home() {
         variant={"expandIcon"}
         iconPlacement="right"
         Icon={MoveRight}
-        onClick={()=>navigate('/onboarding')}
+        onClick={handleGetStartedClick}
       >
         Get Started
       </Button>
