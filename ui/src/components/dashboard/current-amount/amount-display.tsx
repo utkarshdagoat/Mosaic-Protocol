@@ -9,10 +9,10 @@ interface AmountDisplayProps {
 
 export default function AmountDisplay(props: AmountDisplayProps) {
   return (
-    <p className="text-lg md:text-3xl gap-2 inline-flex font-bold text-foreground">
+    <p className="text-lg md:text-3xl gap-2 inline-flex items-center font-bold text-foreground">
       <img
         src={props.currency == "mUSDC" ? usdcToken : mosaicToken}
-        className="w-10 h-10"
+        className="w-6 h-6 md:w-10 md:h-10"
       />
       <NumberTicker value={props.amount} />{" "}
     </p>
