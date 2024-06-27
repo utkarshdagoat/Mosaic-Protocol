@@ -49,7 +49,8 @@ pub fn execute(
     match msg {
         ExecuteMsg::Deposit {
             amount_out_collateral,
-        } => execute::execute_deposit(deps, env, info, amount_out_collateral.into()),
+            amount_in_collateral,
+        } => execute::execute_deposit(deps, env, info, amount_out_collateral, amount_in_collateral),
         ExecuteMsg::Withdraw {
             amount_in_collateral,
             amount_out_collateral,
@@ -80,31 +81,21 @@ pub mod execute {
         deps: DepsMut,
         env: Env,
         info: MessageInfo,
-        amount_out_collateral: u128, // Amount in const
+        amount_out_collateral: Uint128,
+        amount_in_collateral: Uint128, // Amount in const
     ) -> Result<Response, ContractError> {
         let token_info = TOKEN_INFO.load(deps.storage)?;
 
         let mut total_supply = TOTAL_SUPPLY.load(deps.storage)?;
-        total_supply += cosmwasm_std::Uint128::from(amount_out_collateral);
+        total_supply += amount_out_collateral;
         TOTAL_SUPPLY.save(deps.storage, &total_supply)?;
 
         let mut balance = BALANCE_OF
             .load(deps.storage, info.sender.clone())
-            .unwrap_or(Uint128::zero());
-        balance += cosmwasm_std::Uint128::from(info.funds[0].amount);
+            .unwrap_or((Uint128::zero(), Uint128::zero()));
+        balance.0 += amount_in_collateral;
+        balance.1 += amount_out_collateral;
         BALANCE_OF.save(deps.storage, info.sender.clone(), &balance)?;
-
-        let mut debt_incurred = DEBT_INCURRED
-            .load(deps.storage, info.sender.clone())
-            .unwrap_or(Uint128::zero());
-        debt_incurred += cosmwasm_std::Uint128::from(amount_out_collateral);
-        DEBT_INCURRED.save(deps.storage, info.sender.clone(), &debt_incurred)?;
-
-        let mut repayed = REPAYED
-            .load(deps.storage, info.sender.clone())
-            .unwrap_or(Uint128::zero());
-        repayed = Uint128::zero();
-        REPAYED.save(deps.storage, info.sender.clone(), &repayed)?;
 
         let transfer_from_msg = cw20::Cw20ExecuteMsg::Mint {
             recipient: info.sender.to_string(),
@@ -142,13 +133,13 @@ pub mod execute {
         TOTAL_SUPPLY.save(deps.storage, &total_supply)?;
 
         let mut balance = BALANCE_OF.load(deps.storage, info.sender.clone()).unwrap();
-        if balance < amount_out_collateral {
+        if balance.0 < amount_out_collateral {
             return Err(ContractError::UnsufficentFunds {
                 user: info.sender.clone(),
                 amount: amount_out_collateral,
             });
         }
-        balance -= amount_out_collateral;
+        balance.0 -= amount_out_collateral;
         BALANCE_OF.save(deps.storage, info.sender.clone(), &balance)?;
 
         let mut repayed = REPAYED
@@ -175,10 +166,17 @@ pub mod execute {
             amount: coins(amount_in_collateral.into(), "aconst"),
         };
 
+        let msg_transfer_const: CosmosMsg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
+            contract_addr: token_info.token_address.to_string(),
+            msg: to_binary(&transfer_const)?,
+            funds: vec![Coin::new(5000000000000000, "aconst")],
+        });
+
+
+
         Ok(Response::new()
             .add_attribute("action", "withdraw")
-            .add_message(msg)
-            .add_message(transfer_const))
+            .add_messages(vec![msg, msg_transfer_const]))
     }
 
     pub fn execute_increase_allowance(
@@ -254,13 +252,13 @@ pub mod query {
         let token_info = TOKEN_INFO.load(deps.storage)?;
         let mut balance = BALANCE_OF
             .load(deps.storage, addr.clone())
-            .unwrap_or(Uint128::zero());
+            .unwrap_or((Uint128::zero(), Uint128::zero()));
         //let balance_of=get_token_balance_of(&deps, info.sender.clone(), token_info.token_address.clone())?;
         //time period should be in months
         let const_ratio = Uint128::one();
-        let amount = balance / TOTAL_SUPPLY.load(deps.storage)? * time_period * const_ratio;
-        let reward = amount / time_period;
-        to_binary(&reward)
+        // let amount = balance / TOTAL_SUPPLY.load(deps.storage)? * time_period * const_ratio;
+        // let reward = amount / time_period;
+        to_binary(&balance.0)
         //this returns the total stake we would have to give to the person out of the total balance we have in our vault, if he deposited the tokens for one month based on time period the person has submitted us
         //now we can use the archaway js to simply return the value of stake we would have to send him when he pays the loan for that month
         // we can give him the stake in the form of tokens he submitted us.
@@ -271,9 +269,9 @@ pub mod query {
         let token_info = TOKEN_INFO.load(deps.storage)?;
         let mut balance = BALANCE_OF
             .load(deps.storage, addr.clone())
-            .unwrap_or(Uint128::zero());
+            .unwrap_or((Uint128::zero(), Uint128::zero()));
         //let balance_of=get_token_balance_of(&deps, info.sender.clone(), token_info.token_address.clone())?;
-        let contribution = balance / TOTAL_SUPPLY.load(deps.storage)?;
+        // let contribution = balance / TOTAL_SUPPLY.load(deps.storage)?;
         //aise to ye har baar zero aajega as int hona chaahiye
         // this represents the contribution of the user in the total balance of the vault
         // from this contribution we can calcualte the dyanamic rate , and it will change with the time period(each month simply)
@@ -311,7 +309,9 @@ pub mod query {
     }
 
     pub fn get_total_debt(deps: Deps, addr: Addr) -> Result<QueryResponse, StdError> {
-        let total_debt = DEBT_INCURRED.load(deps.storage, addr)?;
+        let balance = BALANCE_OF.load(deps.storage, addr.clone())?;
+        let repay = REPAYED.load(deps.storage, addr)?;
+        let total_debt = balance.1 - repay;
         to_binary(&total_debt)
     }
 

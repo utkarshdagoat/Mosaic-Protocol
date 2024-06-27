@@ -11,9 +11,13 @@
         "deposit": {
           "type": "object",
           "required": [
+            "amount_in_collateral",
             "amount_out_collateral"
           ],
           "properties": {
+            "amount_in_collateral": {
+              "$ref": "#/definitions/Uint128"
+            },
             "amount_out_collateral": {
               "$ref": "#/definitions/Uint128"
             }

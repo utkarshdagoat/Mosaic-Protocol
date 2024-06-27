@@ -46,9 +46,9 @@ export default function GetLoan() {
       const price = data.data.price;
       console.log(price)
       if (price) {
-        setArchAmount(USDAmount / price)
+        setArchAmount(USDAmount / (price*100))
       }
-    }, 1000)
+    }, 750)
 
     return () => clearTimeout(delayDebounceFn)
   }, [USDAmount])
@@ -103,7 +103,8 @@ export default function GetLoan() {
 
       let entrypoint = {
         deposit: {
-          amount_out_collateral: BigInt(USDAmount * 10 ** 10).toString()
+          amount_out_collateral: BigInt(USDAmount * 10 ** 10).toString(),
+          amount_in_collateral: BigInt(ArchAmount* 10**18).toString()
         }
       }
       let funds: Coin[] = [{ amount: BigInt((ArchAmount + 0.1) * 10 ** 18).toString(), denom: "aconst" }]
@@ -134,10 +135,6 @@ export default function GetLoan() {
       let tx = await CosmWasmClient.executeMultiple(walletAddress,  [depositInstruction,increaseAllowance], gas);
       console.log(tx)
 
-
-
-      tx = await CosmWasmClient.execute(walletAddress, TOKEN_CONTRACT, increase_allowance, gas, "memo");
-      console.log(tx)
     }
   }
 

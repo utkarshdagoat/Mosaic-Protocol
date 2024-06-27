@@ -12,6 +12,7 @@ pub struct InstantiateMsg {
 pub enum ExecuteMsg {
     Deposit {
         amount_out_collateral: Uint128,
+        amount_in_collateral:Uint128
     },
     Withdraw {
        amount_in_collateral: Uint128,
