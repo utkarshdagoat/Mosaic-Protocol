@@ -8,10 +8,51 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
-import leapLogo from "@/assets/leap.png"
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useWalletStore } from "@/hooks/useStore";
+import { Window as KeplrWindow } from "@keplr-wallet/types";
+import { SigningArchwayClient, StdFee, Coin } from '@archwayhq/arch3.js';
+import { ChainInfo } from "@/lib/chain";
+const EXCHANGE_RATE_API = import.meta.env.VITE_EXCHANGE_RATE_API
+const dataFetch = async () => {
+  console.log(EXCHANGE_RATE_API)
+  const res = await axios.get(EXCHANGE_RATE_API)
+  console.log(res)
+  const data = await res.data
+  return data
+}
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface Window extends KeplrWindow { }
+}
+
+export interface ExecuteInstruction {
+  contractAddress: string;
+  msg: any;
+  funds?: readonly Coin[];
+}
 
 export default function GetLoan() {
+  const [USDAmount, setUSDAmount] = useState(0)
+  const [ArchAmount, setArchAmount] = useState(0)
+  const { walletAddress } = useWalletStore()
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      console.log(USDAmount)
+      const data = await dataFetch()
+      const price = data.data.price;
+      console.log(price)
+      if (price) {
+        setArchAmount(USDAmount / price)
+      }
+    }, 1000)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [USDAmount])
+
   // const ChainInfo = { chainId: 'constantine-3', chainName: 'Constantine Testnet', rpc: 'https://rpc.constantine.archway.io', rest: 'https://api.constantine.archway.io', stakeCurrency: { coinDenom: 'CONST', coinMinimalDenom: 'aconst', coinDecimals: 18 }, bip44: { coinType: 118 }, bech32Config: { bech32PrefixAccAddr: 'archway', bech32PrefixAccPub: 'archwaypub', bech32PrefixValAddr: 'archwayvaloper', bech32PrefixValPub: 'archwayvaloperpub', bech32PrefixConsAddr: 'archwayvalcons', bech32PrefixConsPub: 'archwayvalconspub', }, currencies: [{ coinDenom: 'CONST', coinMinimalDenom: 'aconst', coinDecimals: 18 }], feeCurrencies: [{ coinDenom: 'CONST', coinMinimalDenom: 'aconst', coinDecimals: 18 }], coinType: 118, gasPriceStep: { low: 0, average: 0.1, high: 0.2 }, features: ['cosmwasm'], };
   // async function connectKeplrWallet(chainName, chainRpcUrl, chainId) {
   //   if (typeof window.keplr === 'undefined') {
@@ -39,7 +80,6 @@ export default function GetLoan() {
   //     console.error('Error enabling Keplr:', error);
   //     return;
   //   }
-
   //   let offlineSigner;
   //   try {
   //     offlineSigner = await window.getOfflineSignerAuto(chainId);
@@ -52,6 +92,55 @@ export default function GetLoan() {
   //   const queryHandler = CosmWasmClient.queryContractSmart;
   //   console.log('Wallet connected', { offlineSigner: offlineSigner, CosmWasmClient: CosmWasmClient, accounts: accounts, chain: ChainInfo, queryHandler: queryHandler, });
   // }
+
+
+  const callContract = async () => {
+    if (window.keplr && walletAddress) {
+      const offlineSigner = window.keplr.getOfflineSigner(ChainInfo.chainId);
+      const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
+      const CONTRACT_ADDRESS = import.meta.env.VITE_VAULT_CONTRACT;
+      const TOKEN_CONTRACT = import.meta.env.VITE_TOKEN_CONTRACT;
+
+      let entrypoint = {
+        deposit: {
+          amount_out_collateral: BigInt(USDAmount * 10 ** 10).toString()
+        }
+      }
+      let funds: Coin[] = [{ amount: BigInt((ArchAmount + 0.1) * 10 ** 18).toString(), denom: "aconst" }]
+      let gas: StdFee = {
+        amount: [{
+          amount: "300000000",
+          denom: "aconst"
+        },
+        ],
+        gas: "3000000"
+      }
+      const depositInstruction : ExecuteInstruction ={
+        contractAddress:CONTRACT_ADDRESS,
+        msg:entrypoint,
+        funds
+      }
+      let increase_allowance = {
+        increase_allowance: {
+          spender: CONTRACT_ADDRESS,
+          amount: BigInt(10 ** 18).toString()
+        }
+      }
+      const increaseAllowance: ExecuteInstruction = {
+        contractAddress: TOKEN_CONTRACT,
+        msg:increase_allowance
+
+      }
+      let tx = await CosmWasmClient.executeMultiple(walletAddress,  [depositInstruction,increaseAllowance], gas);
+      console.log(tx)
+
+
+
+      tx = await CosmWasmClient.execute(walletAddress, TOKEN_CONTRACT, increase_allowance, gas, "memo");
+      console.log(tx)
+    }
+  }
+
   return (
     <>
       <Dialog>
@@ -66,11 +155,17 @@ export default function GetLoan() {
           <Input
             id="amount"
             name="amount"
-            placeholder="Enter Loan Amount (USDC)"
+            placeholder="Enter Loan Amount USD"
+            value={USDAmount}
+            onChange={(e) => setUSDAmount(Number(e.target.value))}
+            type="number"
           />
           <Input
-            id="time"
-            placeholder="Enter time period for the loan (say 5 months)"
+            id="amount"
+            name="amount"
+            placeholder="Your Arch Amount"
+            value={ArchAmount}
+            disabled
           />
           <p className="text-xs mt-2 text-muted-foreground">Select the loan type</p>
           <div className="flex flex-row gap-2">
@@ -79,11 +174,10 @@ export default function GetLoan() {
           </div>
 
           <div className="flex flex-row gap-2">
-            <Input className="flex-1" placeholder="Your wallet Address"></Input>
-            <Button variant={'ghost'} size={'icon'} ><img src={leapLogo} /></Button>
+            <Input className="flex-1" placeholder="Your wallet Address" value={walletAddress === null ? "" : walletAddress}></Input>
           </div>
 
-          <Button>Apply</Button>
+          <Button onClick={callContract}>Get Loan</Button>
         </DialogContent>
       </Dialog>
     </>

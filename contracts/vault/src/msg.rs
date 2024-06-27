@@ -17,6 +17,9 @@ pub enum ExecuteMsg {
        amount_in_collateral: Uint128,
        amount_out_collateral: Uint128 
     },
+    IncreaseAllowance{
+        amount:Uint128
+    }
 }
 
 #[cw_serde]

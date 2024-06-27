@@ -56,6 +56,9 @@ pub fn execute(
         } => {
             execute::execute_withdraw(deps, env, info, amount_in_collateral, amount_out_collateral)
         }
+        ExecuteMsg::IncreaseAllowance { amount } => {
+            execute::execute_increase_allowance(deps, env, info, amount)
+        }
     }
 }
 pub mod execute {
@@ -154,12 +157,6 @@ pub mod execute {
         repayed += amount_in_collateral;
         REPAYED.save(deps.storage, info.sender.clone(), &repayed)?;
 
-        let take_approval = cw20::Cw20ExecuteMsg::IncreaseAllowance {
-            spender: info.sender.to_string(),
-            amount: amount_in_collateral,
-            expires: None,
-        };
-
         // Burn the stablecoin
         let transfer_msg = cw20::Cw20ExecuteMsg::BurnFrom {
             owner: info.sender.to_string(),
@@ -169,16 +166,8 @@ pub mod execute {
         let msg: CosmosMsg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
             contract_addr: token_info.token_address.to_string(),
             msg: to_binary(&transfer_msg)?,
-            funds: info.funds.clone(),
+            funds: vec![Coin::new(5000000000000000, "aconst")],
         });
-        
-        
-        let approval_msg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
-            contract_addr: token_info.token_address.to_string(),
-            msg: to_binary(&take_approval)?,
-            funds: info.funds,
-        });
-
 
         // Transfer the funds from contract to user
         let transfer_const = BankMsg::Send {
@@ -188,9 +177,30 @@ pub mod execute {
 
         Ok(Response::new()
             .add_attribute("action", "withdraw")
-            .add_message(approval_msg)
             .add_message(msg)
             .add_message(transfer_const))
+    }
+
+    pub fn execute_increase_allowance(
+        deps: DepsMut,
+        _env: Env,
+        info: MessageInfo,
+        amount: Uint128,
+    ) -> Result<Response, ContractError> {
+        let token_info = TOKEN_INFO.load(deps.storage)?;
+        let take_approval = cw20::Cw20ExecuteMsg::IncreaseAllowance {
+            spender: _env.contract.address.to_string(),
+            amount,
+            expires: None,
+        };
+
+        let approval_msg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
+            contract_addr: token_info.token_address.to_string(),
+            msg: to_binary(&take_approval)?,
+            funds: info.funds,
+        });
+
+        Ok(Response::new().add_message(approval_msg))
     }
 
     pub fn get_token_balance_of(
