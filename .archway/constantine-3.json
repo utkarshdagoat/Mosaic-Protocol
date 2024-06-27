@@ -1,0 +1,98 @@
+{
+  "deployments": [
+    {
+      "action": "instantiate",
+      "txhash": "0AFC698374F349435605BA1DA4001585D2AAF39608AA2636F0064AEF485E83DB",
+      "wasm": {
+        "codeId": 3108
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway1e3hxhzad6rym9rst6npnnmy462c9yjkncvw42w9ufapev2hrvnwsp6mz5f",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1qexrfdz7xfcz8zp4pjjcwr9ngfreltaw0llfjgj5k47vj8ml2xjqz2fs50"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "58D66109B1B839DE772832F9C934CDC63DB52433B5E71884C1837D2E394D9ADF",
+      "wasm": {
+        "codeId": 3108,
+        "checksum": "ef3ab0bbe7b5e5acf7781c4dd43da3864ccb8103f4fb249eab95826ecf6529b1"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "770B43A9812E062115C4B074664342AB7D551131BEEC1F2DCEE0BA94A12A7A35",
+      "wasm": {
+        "codeId": 3038
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway12ljz8ajelkwrd98awyvmc5zna7kmcnsjht4nfrcv3hsxcmrhhy7qudtppp",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "CONST",
+        "token_contract_address": "uconst"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "EE638CE7DE33D648D3C973A0255E66892FFEEA85273E3EEA0827E370CDE16BCB",
+      "wasm": {
+        "codeId": 3038,
+        "checksum": "dbc6e0d0cb45af33a0d383765d5b6052868089692e34c785639aa81c6d11bbfd"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "32FD00DE09AD1F8569693A75CD23631DBEE3D356D8F92FB7FC7BD967815E0E2D",
+      "wasm": {
+        "codeId": 3036
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0",
+        "address": "archway1qexrfdz7xfcz8zp4pjjcwr9ngfreltaw0llfjgj5k47vj8ml2xjqz2fs50",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "name": "mosaicUSD",
+        "symbol": "mUSD",
+        "decimals": 10,
+        "initial_balances": [
+          {
+            "address": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck",
+            "amount": "100000"
+          }
+        ]
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "51AC5BE95D40FB8BFF528D1F36CB7C7028F7CEF43B5F9ED0998D0C19237D855A",
+      "wasm": {
+        "codeId": 3036,
+        "checksum": "7eba446c5f38a1311c9c442d55730153b8329967cf6b1e6c43e49a1516da634a"
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0"
+      }
+    }
+  ]
+}
