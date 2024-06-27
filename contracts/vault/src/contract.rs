@@ -97,6 +97,12 @@ pub mod execute {
         debt_incurred += cosmwasm_std::Uint128::from(amount_out_collateral);
         DEBT_INCURRED.save(deps.storage, info.sender.clone(), &debt_incurred)?;
 
+        let mut repayed = REPAYED
+            .load(deps.storage, info.sender.clone())
+            .unwrap_or(Uint128::zero());
+        repayed = Uint128::zero();
+        REPAYED.save(deps.storage, info.sender.clone(), &repayed)?;
+
         let transfer_from_msg = cw20::Cw20ExecuteMsg::Mint {
             recipient: info.sender.to_string(),
             amount: amount_out_collateral.into(),
@@ -105,7 +111,7 @@ pub mod execute {
         let msg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
             contract_addr: token_info.token_address.to_string(),
             msg: to_binary(&transfer_from_msg)?,
-            funds: info.funds,
+            funds: vec![Coin::new(5000000000000000, "aconst")],
         });
 
         Ok(Response::new()
@@ -117,11 +123,12 @@ pub mod execute {
         deps: DepsMut,
         _env: Env,
         info: MessageInfo,
-        amount_in_collateral: Uint128, // My stable coin
-        amount_out_collateral: Uint128,  // CONST
+        amount_in_collateral: Uint128,  // My stable coin
+        amount_out_collateral: Uint128, // CONST
     ) -> Result<Response, ContractError> {
         let token_info = TOKEN_INFO.load(deps.storage)?;
         let mut total_supply = TOTAL_SUPPLY.load(deps.storage)?;
+
         if total_supply < amount_in_collateral {
             return Err(ContractError::UnsufficentFunds {
                 user: info.sender.clone(),
@@ -141,17 +148,17 @@ pub mod execute {
         balance -= amount_out_collateral;
         BALANCE_OF.save(deps.storage, info.sender.clone(), &balance)?;
 
-        let mut debt_incured = DEBT_INCURRED
+        let mut repayed = REPAYED
             .load(deps.storage, info.sender.clone())
             .unwrap_or(Uint128::zero());
-        if debt_incured < amount_in_collateral {
-            return Err(ContractError::UnsufficentFunds {
-                user: info.sender.clone(),
-                amount: amount_in_collateral,
-            });
-        }
-        debt_incured -= amount_in_collateral;
-        DEBT_INCURRED.save(deps.storage, info.sender.clone(), &debt_incured)?;
+        repayed += amount_in_collateral;
+        REPAYED.save(deps.storage, info.sender.clone(), &repayed)?;
+
+        let take_approval = cw20::Cw20ExecuteMsg::IncreaseAllowance {
+            spender: info.sender.to_string(),
+            amount: amount_in_collateral,
+            expires: None,
+        };
 
         // Burn the stablecoin
         let transfer_msg = cw20::Cw20ExecuteMsg::BurnFrom {
@@ -159,23 +166,29 @@ pub mod execute {
             amount: amount_in_collateral,
         };
 
-        let msg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
+        let msg: CosmosMsg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
             contract_addr: token_info.token_address.to_string(),
             msg: to_binary(&transfer_msg)?,
+            funds: info.funds.clone(),
+        });
+        
+        
+        let approval_msg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
+            contract_addr: token_info.token_address.to_string(),
+            msg: to_binary(&take_approval)?,
             funds: info.funds,
         });
 
-        const MULTIPLIER: u128 = 1000000;
-        let mut total_amount: u128 = amount_in_collateral.into();
-        total_amount = total_amount * MULTIPLIER;
+
         // Transfer the funds from contract to user
         let transfer_const = BankMsg::Send {
             to_address: info.sender.clone().to_string(),
-            amount: coins(total_amount, "uconst"),
+            amount: coins(amount_in_collateral.into(), "aconst"),
         };
 
         Ok(Response::new()
             .add_attribute("action", "withdraw")
+            .add_message(approval_msg)
             .add_message(msg)
             .add_message(transfer_const))
     }
@@ -212,6 +225,8 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> Result<QueryResponse, StdE
             query::get_dyanamic_interest_rates(deps, address)
         }
         QueryMsg::GetFixedInterstRates {} => query::get_fixed_interest_ratio(deps),
+        QueryMsg::GetTotalDebt { address } => query::get_total_debt(deps, address),
+        QueryMsg::GetRepayedDebt { address } => query::get_repaid(deps, address),
     }
 }
 
@@ -283,6 +298,16 @@ pub mod query {
         let balance_of = BALANCE_OF.load(deps.storage, addr)?;
 
         to_binary(&balance_of)
+    }
+
+    pub fn get_total_debt(deps: Deps, addr: Addr) -> Result<QueryResponse, StdError> {
+        let total_debt = DEBT_INCURRED.load(deps.storage, addr)?;
+        to_binary(&total_debt)
+    }
+
+    pub fn get_repaid(deps: Deps, addr: Addr) -> Result<QueryResponse, StdError> {
+        let repay = REPAYED.load(deps.storage, addr)?;
+        to_binary(&repay)
     }
 }
 

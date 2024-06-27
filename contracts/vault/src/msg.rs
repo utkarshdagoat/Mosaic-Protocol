@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{Addr, Uint128};
 
@@ -34,4 +36,10 @@ pub enum QueryMsg {
 
     #[returns(Uint128)]
     GetFixedInterstRates {},
+
+    #[returns(Uint128)]
+    GetRepayedDebt { address: Addr},
+
+    #[returns(Uint128)]
+    GetTotalDebt { address: Addr}
 }

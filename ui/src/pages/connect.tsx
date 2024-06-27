@@ -42,13 +42,13 @@ export default function Connect() {
             const offlineSigner =  window.keplr.getOfflineSigner(ChainInfo.chainId);
             const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
             const  accounts =  offlineSigner.getAccounts()
-            const CONTRACT_ADDRESS = "archway1e3hxhzad6rym9rst6npnnmy462c9yjkncvw42w9ufapev2hrvnwsp6mz5f";
+            const CONTRACT_ADDRESS = "archway1gxls4uu5fjgzyfley9uqq9c3a93k5juzc53kw9kkgu54kn02dq8smh8xl5";
             let entrypoint = {
                deposit:{
-                amount_out_collateral:"1000000"
+                amount_out_collateral:"10000000000000"
                } 
             }
-            let funds : Coin[]= [{amount:"1000000000000000000" , denom:"aconst"}]
+            let funds : Coin[]= [{amount:BigInt(1 * (10**18)).toString(), denom:"aconst"}]
             let gas : StdFee = {
                 amount: [{
                     amount:"300000000",

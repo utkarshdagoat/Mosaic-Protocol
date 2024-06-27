@@ -9,10 +9,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import leapLogo from "@/assets/leap.png"
-import { SigningArchwayClient } from '@archwayhq/arch3.js';
 
 
-export function GetLoan() {
+export default function GetLoan() {
   // const ChainInfo = { chainId: 'constantine-3', chainName: 'Constantine Testnet', rpc: 'https://rpc.constantine.archway.io', rest: 'https://api.constantine.archway.io', stakeCurrency: { coinDenom: 'CONST', coinMinimalDenom: 'aconst', coinDecimals: 18 }, bip44: { coinType: 118 }, bech32Config: { bech32PrefixAccAddr: 'archway', bech32PrefixAccPub: 'archwaypub', bech32PrefixValAddr: 'archwayvaloper', bech32PrefixValPub: 'archwayvaloperpub', bech32PrefixConsAddr: 'archwayvalcons', bech32PrefixConsPub: 'archwayvalconspub', }, currencies: [{ coinDenom: 'CONST', coinMinimalDenom: 'aconst', coinDecimals: 18 }], feeCurrencies: [{ coinDenom: 'CONST', coinMinimalDenom: 'aconst', coinDecimals: 18 }], coinType: 118, gasPriceStep: { low: 0, average: 0.1, high: 0.2 }, features: ['cosmwasm'], };
   // async function connectKeplrWallet(chainName, chainRpcUrl, chainId) {
   //   if (typeof window.keplr === 'undefined') {
@@ -81,7 +80,7 @@ export function GetLoan() {
 
           <div className="flex flex-row gap-2">
             <Input className="flex-1" placeholder="Your wallet Address"></Input>
-            <Button variant={'ghost'} size={'icon'} onClick={}><img src={leapLogo} /></Button>
+            <Button variant={'ghost'} size={'icon'} ><img src={leapLogo} /></Button>
           </div>
 
           <Button>Apply</Button>

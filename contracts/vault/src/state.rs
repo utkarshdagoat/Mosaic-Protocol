@@ -9,7 +9,8 @@ pub const TOTAL_SUPPLY: Item<Uint128> = Item::new("total_supply");
 pub const BALANCE_OF: Map<Addr,Uint128>=Map::new("balance_of");
 // Map of user addr => (loanIndex => timePeriod)
 pub const DEBT_INCURRED : Map<Addr,Uint128> = Map::new("debt_of");
-
+// Map of user addr => (loanIndex => timePeriod)
+pub const REPAYED : Map<Addr,Uint128> = Map::new("debt_of");
 #[cw_serde]
 pub struct  TokenInfo{
     pub token_denom: String,

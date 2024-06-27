@@ -25,7 +25,7 @@ export default function Home() {
           navigate("/login")
         } else if (res.status === 200) {
           setUser(res.data)
-          navigate("/pay")
+          navigate("/dashboard")
         } else {
           setUser(null)
           toast({

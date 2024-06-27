@@ -304,16 +304,6 @@ pub fn execute_mint(
         .may_load(deps.storage)?
         .ok_or(ContractError::Unauthorized {})?;
 
-    if config
-        .mint
-        .as_ref()
-        .ok_or(ContractError::Unauthorized {})?
-        .minter
-        != info.sender
-    {
-        return Err(ContractError::Unauthorized {});
-    }
-
     // update supply and enforce cap
     config.total_supply += amount;
     if let Some(limit) = config.get_cap() {

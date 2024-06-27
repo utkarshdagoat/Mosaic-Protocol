@@ -7,7 +7,6 @@ import Dashboard from "@/pages/dashboard";
 import Onboarding from "./pages/onboarding";
 import Login from "./pages/login";
 import Connect from "./pages/connect";
-
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">

@@ -2,6 +2,268 @@
   "deployments": [
     {
       "action": "instantiate",
+      "txhash": "DC5F25440A16C34608D291CB7A9E44249A4186FC24045231DBAB24BEBA777A30",
+      "wasm": {
+        "codeId": 3117
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway1gxls4uu5fjgzyfley9uqq9c3a93k5juzc53kw9kkgu54kn02dq8smh8xl5",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1p0cj58ghvfuyxqxcdt3tj6lmcgnaunjzvpxqzy52k45pe67r9hgqvk05kq"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "6E1F391B42711E59BF2E3A545925F555DB1C6B5032D283F45BE20EB65383582A",
+      "wasm": {
+        "codeId": 3117,
+        "checksum": "1ff0bd5278ad7a28264f773eec34a026536a55018d6b42430cfb7e69fdd9992b"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "40975A5324EC91BE02A6209BA8C54AEC21DBC92BF651B99C19F0870BCCD1B0D7",
+      "wasm": {
+        "codeId": 3116
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0",
+        "address": "archway1p0cj58ghvfuyxqxcdt3tj6lmcgnaunjzvpxqzy52k45pe67r9hgqvk05kq",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "name": "mosaicUSD",
+        "symbol": "mUSD",
+        "decimals": 10,
+        "initial_balances": [],
+        "mint": {
+          "minter": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+        }
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "1D3F4C7DF1517A1A9F795B4E98B3B64E8C21C5B31AD4F707BA2B05151AE8235A",
+      "wasm": {
+        "codeId": 3116,
+        "checksum": "777d4d4181557e2556a3e46e34c2d44654fb652cc99173a8a96894c7cfd08a26"
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "FC6E5C236EC7022BDFAC85EA44DD7B51E8F5A78B0933F63DE929413050DAA7A3",
+      "wasm": {
+        "codeId": 3114
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway14zgx07sgns3y2pq8dydnskzav4u42ut9uwfpylwzqemjxmv0uyds9680ap",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1m9l0af5ucpymy0ftua8w03zp22ustw2eag0vfqs55dkw4lkvzp3qy2txew"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "FA863D4A07DFAE9FA7F87FC3A04050051BF48DFBFACC7DDB6ADF7604750F8E2B",
+      "wasm": {
+        "codeId": 3115
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0",
+        "address": "archway1m9l0af5ucpymy0ftua8w03zp22ustw2eag0vfqs55dkw4lkvzp3qy2txew",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "name": "mosaicUSD",
+        "symbol": "mUSD",
+        "decimals": 10,
+        "initial_balances": [],
+        "mint": {
+          "minter": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+        }
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "FA5B7B268280589E9F232B15970A39CE8A6442BF268E7AE03CF9F7441D16CE1F",
+      "wasm": {
+        "codeId": 3115,
+        "checksum": "7eba446c5f38a1311c9c442d55730153b8329967cf6b1e6c43e49a1516da634a"
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "C8DB68D41A1C0838AC87D4158737C6FB082FBA70389A13288C0905CA072BA8E3",
+      "wasm": {
+        "codeId": 3114,
+        "checksum": "b85371e6782ba5587bc468046c22cf24ff07b27e4d0e55c9f812a6ee135ed458"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "93714C0F09811FA32DCA94A0CBE099FB2850DBE42749F4AFF7F8E94ED2227830",
+      "wasm": {
+        "codeId": 3112
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway1gplenhfqxh8se4saya37kfgymrrqlmmglhevxc0n2mvqhmqgtgtqs6w445",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1a05cvnr4xhdrr2s2v5w8nwqa90uf3c0zflu87xmnyarpqw66rgeq7kmtjv"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "317DB8C068A7ED3BDD2875115425F43C86C9CE8A6C8A2C93B3E24D969BF05927",
+      "wasm": {
+        "codeId": 3113
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0",
+        "address": "archway1a05cvnr4xhdrr2s2v5w8nwqa90uf3c0zflu87xmnyarpqw66rgeq7kmtjv",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "name": "mosaicUSD",
+        "symbol": "mUSD",
+        "decimals": 10,
+        "initial_balances": [
+          {
+            "address": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck",
+            "amount": "10000000000000000"
+          }
+        ],
+        "mint": {
+          "minter": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+        }
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "B79375E23D9927BC440C596DDE539493C8A56909A0ABCA29C586DA0A6582CE7D",
+      "wasm": {
+        "codeId": 3113,
+        "checksum": "7eba446c5f38a1311c9c442d55730153b8329967cf6b1e6c43e49a1516da634a"
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "A3184B9D0192468C43629CCF46C4CBE9A9754C5BD9740C298C53075ECF739595",
+      "wasm": {
+        "codeId": 3112,
+        "checksum": "8ed462516c7ce98e8892136145152788de7f8105f9d9777d1dc3a3e53a3effde"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "AE3F6CC20DB005F5CCCF34BA60B8325A3D0AA0096366124142634A4B080D706E",
+      "wasm": {
+        "codeId": 3111
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway1xzyk9xetxaayyvnc8wcksj024h8wu2agsszyk5y8jktds22xp9gsv0jal5",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1csr7yw3xah7hdpvm9ujeezv9da2dlf34smk4hrx0mvpv639z2pnsmfkleu"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "BC9ACA77D30CA09228139DF5831C532EFB6D8DAABA4E5600A59D453819225AE0",
+      "wasm": {
+        "codeId": 3111,
+        "checksum": "ef3ab0bbe7b5e5acf7781c4dd43da3864ccb8103f4fb249eab95826ecf6529b1"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "5DBEE90D1CF87C85861CBFED67B71D809C2C6BC7D0DFE3A1D419336219876EA6",
+      "wasm": {
+        "codeId": 3110
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0",
+        "address": "archway1csr7yw3xah7hdpvm9ujeezv9da2dlf34smk4hrx0mvpv639z2pnsmfkleu",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "name": "mosaicUSD",
+        "symbol": "mUSD",
+        "decimals": 10,
+        "initial_balances": [
+          {
+            "address": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck",
+            "amount": "10000000000000000"
+          }
+        ],
+        "mint": {
+          "minter": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+        }
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "013B5AA09B93A072DA1F2700E0312A734F1A9486052D3371F757C5B78EF78DBB",
+      "wasm": {
+        "codeId": 3110,
+        "checksum": "7eba446c5f38a1311c9c442d55730153b8329967cf6b1e6c43e49a1516da634a"
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
       "txhash": "0AFC698374F349435605BA1DA4001585D2AAF39608AA2636F0064AEF485E83DB",
       "wasm": {
         "codeId": 3108

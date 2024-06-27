@@ -1,9 +1,9 @@
 import GetLoan from "./get-loan";
-import { useState } from "react";
 import TypingAnimation from "@/components/ui/typing-animation";
+import { useUserStore } from "@/hooks/useStore";
 
 export default function DashboardHeader() {
-  const [userEmail, setUserEmail] = useState("abcd@gmail.com");
+  const {user} = useUserStore() 
   
   return (
     <div className="flex flex-row justify-between">
@@ -11,7 +11,7 @@ export default function DashboardHeader() {
         Hi{" "}
         <TypingAnimation
           className="text-primary"
-          text={`${userEmail.split("@")[0]} :)`}
+          text={`${user?.email.split("@")[0]} :)`}
         />
       </h1>
       <GetLoan />
