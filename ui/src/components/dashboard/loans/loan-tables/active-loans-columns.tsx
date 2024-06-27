@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import RedeemCollateralModal from "./redeem-collateral-modal";
 
 export type ActiveLoans = {
   id: string;
@@ -37,7 +38,7 @@ export const ActiveLoansColumns: ColumnDef<ActiveLoans | { actions: true }>[] =
       cell: ({ row }) => {
         return (
           <div className="font-semibold">
-            {(parseFloat(row.getValue("paidPercentage"))*100).toFixed(2)}%
+            {(parseFloat(row.getValue("paidPercentage")) * 100).toFixed(2)}%
           </div>
         );
       },
@@ -46,18 +47,7 @@ export const ActiveLoansColumns: ColumnDef<ActiveLoans | { actions: true }>[] =
       accessorKey: "actions",
       header: () => <div className="text-primary">Redeem Collateral</div>,
       cell: ({ row }) => {
-        return (
-          <div>
-            <Button
-              variant={"outline"}
-              onClick={() => {
-                alert(`Redeem collateral for loan ${row.getValue("amount")}`);
-              }}
-            >
-              Redeem
-            </Button>
-          </div>
-        );
+        return <RedeemCollateralModal />;
       },
     },
   ];
