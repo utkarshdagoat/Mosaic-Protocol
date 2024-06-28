@@ -25,7 +25,7 @@ pub struct  Members(pub Vec<(Addr,MemeberType)>);
 #[derive(QueryResponses)]
 pub enum QueryMsg {
     // GetCount returns the current count as a json-encoded number
-    #[returns(Uint128)]
+    #[returns((Uint128,Uint128))]
     GetVotersCount { id:Uint128},
 
     #[returns(Proposals)]
@@ -36,7 +36,7 @@ pub enum QueryMsg {
 }
 #[cw_serde]
 pub enum ExecuteMsg {
-    CreateProposal {desc:String},
-    Vote {id: Uint128},
+    CreateProposal {desc:String, title:String},
+    Vote {id: Uint128, value: Uint128},
     JoinDao {MemberType: Uint128}
 }

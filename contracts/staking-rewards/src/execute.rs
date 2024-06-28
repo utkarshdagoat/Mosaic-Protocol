@@ -1,6 +1,9 @@
 use cw20::Cw20ReceiveMsg;
 
-use cosmwasm_std::{DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64};
+use cosmwasm_std::{
+    to_binary, Coin, CosmosMsg, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128,
+    Uint64,
+};
 
 use crate::error::ContractError;
 use crate::msg::ExecuteMsg;
@@ -26,12 +29,24 @@ pub fn execute_stake(
 
     user_state.staked_amount += amount;
 
+    let transfer_from_msg = cw20::Cw20ExecuteMsg::Mint {
+        recipient: info.sender.to_string(),
+        amount: amount.into(),
+    };
+
+    let msg: CosmosMsg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
+        contract_addr: config.reward_token.to_string(),
+        msg: to_binary(&transfer_from_msg)?,
+        funds: vec![Coin::new(5000000000000000, "aconst")],
+    });
+
     USER_STATES.save(deps.storage, info.sender.clone(), &user_state)?;
 
     config.total_staked += amount;
     CONFIG.save(deps.storage, &config)?;
 
     Ok(Response::new()
+        .add_message(msg)
         .add_attribute("action", "stake")
         .add_attribute("user", info.sender.as_str())
         .add_attribute("amount", amount.to_string()))

@@ -18,7 +18,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useState } from "react";
+import { Window as KeplrWindow } from "@keplr-wallet/types";
+import { SigningArchwayClient, StdFee, Coin } from '@archwayhq/arch3.js';
+import { ChainInfo } from "@/lib/chain";
+import { useWalletStore } from "@/hooks/useStore";
+import { useEffect, useState } from "react";
+import { useToast } from "../ui/use-toast";
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface Window extends KeplrWindow { }
+}
+
 
 type Proposal = {
   title: string;
@@ -63,7 +73,36 @@ export default function Proposals() {
       noCount: 62,
     },
   ];
+  const { walletAddress } = useWalletStore()
+  
 
+  const ProposasQuery = async () => {
+
+    if (window.keplr && walletAddress) {
+      const offlineSigner = window.keplr.getOfflineSigner(ChainInfo.chainId);
+      const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
+      const CONTRACT_ADDRESS = import.meta.env.VITE_GOVERNANCE_CONTRACT;
+
+      let entrypoint = {
+        get_proposals: {}
+      }
+
+      let tx = await CosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, entrypoint);
+      console.log("proposals", tx)
+      if (tx.length > 0) {
+        console.log("here")
+        for (let i = 0; i < tx.length; i++) {
+          let role = tx[i][1]
+          let address = tx[i][0]
+        }
+      }
+    }
+  }
+
+
+  useEffect(() => {
+    ProposasQuery()
+  }, [walletAddress])
   return (
     <div className="pr-4 pt-4">
       <div className="flex justify-between items-center">
@@ -82,11 +121,50 @@ export default function Proposals() {
 function AddProposal() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const {walletAddress} = useWalletStore()
+  const {toast} = useToast()
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     //TODO: Add proposal to the governance
     e.preventDefault();
-    console.log(title, description);
+
+
+    e.preventDefault();
+    if (window.keplr && walletAddress) {
+      const offlineSigner = window.keplr.getOfflineSigner(ChainInfo.chainId);
+      const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
+      const CONTRACT_ADDRESS = import.meta.env.VITE_GOVERNANCE_CONTRACT;
+
+      let entrypoint = {
+        create_proposal: {
+          desc:description,
+          title 
+        }
+      }
+      let funds: Coin[] = [{ amount: BigInt((0.01) * 10 ** 18).toString(), denom: "aconst" }]
+      let gas: StdFee = {
+        amount: [{
+          amount: "300000000",
+          denom: "aconst"
+        },
+        ],
+        gas: "3000000"
+      }
+      try {
+      let tx = await CosmWasmClient.execute(walletAddress,CONTRACT_ADDRESS,entrypoint, gas,"memo",funds);
+      console.log(tx)
+      toast({
+        title: "Success",
+        description: "txHash: " + tx.transactionHash,
+      });
+      } catch (error) {
+        console.log(error)
+        toast({
+          title: "Error",
+          description: "Error creating proposal check your funds",
+          variant:"destructive"
+        });
+      } 
+    }
   };
 
   return (

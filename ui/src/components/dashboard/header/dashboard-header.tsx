@@ -26,14 +26,15 @@ export default function DashboardHeader() {
     } else {
       await window.keplr.enable(chainId);
       const address = await window.keplr.getKey(chainId);
-      console.log(address);
       setWalletAddress(address.bech32Address);
+      localStorage.setItem("walletAddress", address.bech32Address);
     }
   };
 
-  useEffect(() => {
-    console.log("wallet", walletAddress);
-  }, [walletAddress]);
+  useEffect(()=>{
+  },[walletAddress])
+
+
 
   return (
     <div className="flex flex-row justify-between">
@@ -41,12 +42,12 @@ export default function DashboardHeader() {
         Hi{" "}
         <TypingAnimation
           className="text-primary"
-          text={user?.email.split("@")[0] ? "" : walletAddress || "there"}
+          text={walletAddress === null ? "" : `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`}
           // text={user?.email === undefined ? "" : user.email.split("@")[0]}
         />
       </h1>
       <div className="flex gap-6">
-        <Button onClick={connectWalletHandle}>Connect Wallet</Button>
+        <Button  onClick={connectWalletHandle}>{walletAddress === null ? "Connect Wallet" : walletAddress}</Button>
         <GetLoan />
       </div>
     </div>

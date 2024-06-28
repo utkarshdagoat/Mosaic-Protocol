@@ -2,6 +2,227 @@
   "deployments": [
     {
       "action": "instantiate",
+      "txhash": "7A90DAAA94D65A276A5C74FDBB7C8AF2A1B017EF38F175987BBE33A874F9BDE2",
+      "wasm": {
+        "codeId": 3150
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0",
+        "address": "archway1qslu3uyh7jk2jnay6qypyen2z8ked5h3m83mpt66huetknf3j49qvdhpem",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "sMUSD",
+        "token_contract_address": "archway1pjpwsdert785u7jx7ea4pg9729sgqna8ravp97mn70e53umqzpuqe7ng95"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "049BD3B29397E12FB740BD68F42A376D957BF82F006C4431838FEF3F1D654B44",
+      "wasm": {
+        "codeId": 3150,
+        "checksum": "849a2ee518f259e32662536f80f9329fd8ebe6f689d073184e043d593e213713"
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "A2CEC98A5F06C19DE24D6BD5F1817E6826030B7CAD6F8DA40E8CBCD47E8D186C",
+      "wasm": {
+        "codeId": 3149
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0",
+        "address": "archway14wj46yzfh5nchxq0a3tax6cunserxxuppy3jhuplplyxgj67p0gq6gtd0w",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "sMUSD",
+        "token_contract_address": "archway1pjpwsdert785u7jx7ea4pg9729sgqna8ravp97mn70e53umqzpuqe7ng95"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "043460A50FBD38F0BC8A9B43AA0B6406875013119BED45665F2B6EDED36C7F21",
+      "wasm": {
+        "codeId": 3149,
+        "checksum": "a0fee38d2068077218a77887c5d7ae14be683f58ee67aa9d2421436e92d916c4"
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "2716992981EE8CC8A16004691E34E872B7B4E4AFCF064042B602753A756A5788",
+      "wasm": {
+        "codeId": 3148
+      },
+      "contract": {
+        "name": "staking-rewards",
+        "version": "0.1.0",
+        "address": "archway1xq8we25lvyd2gj8ygpzzwgs9pwetlc582hkt5329s24xpc0frn0q6lmgh4",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "staking_token": "archway1p0cj58ghvfuyxqxcdt3tj6lmcgnaunjzvpxqzy52k45pe67r9hgqvk05kq",
+        "reward_token": "archway1pjpwsdert785u7jx7ea4pg9729sgqna8ravp97mn70e53umqzpuqe7ng95",
+        "reward_rate": "10"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "2C393BE855683BAEA0D98246BDDA76B4F18042B7383D9D5E92B56C6F6055149F",
+      "wasm": {
+        "codeId": 3148,
+        "checksum": "5a10379d41a206de03f08dcbd3ae8fe1d94d3697db242b24fd6028c8cf1f4692"
+      },
+      "contract": {
+        "name": "staking-rewards",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "AFE0C137AE13BA8FE439EE1139EBBF77FA1C27B083290D833344338562920A7B",
+      "wasm": {
+        "codeId": 3147,
+        "checksum": "008cd727f86e8b2cd24788894aa20b5e7355eab856a911ac761a3d10336cf99d"
+      },
+      "contract": {
+        "name": "staking-rewards",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "21FA9A62019889FEC44412E4A4CA9618962F97CB655C8CB3DB323F9E6407E5DB",
+      "wasm": {
+        "codeId": 3146
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0",
+        "address": "archway1wqfxs3rmcjy9qlwk9r7yjjpq3gr03uq4k2szvgxkvl5fzvuyp0nsk2stgk",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "sMUSD",
+        "token_contract_address": "archway1pjpwsdert785u7jx7ea4pg9729sgqna8ravp97mn70e53umqzpuqe7ng95"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "F8BB13ADCE978BF7858ED493147EC9AAA24DE437687A99DCFCBC0706C351D326",
+      "wasm": {
+        "codeId": 3146,
+        "checksum": "a7c8eae1581aeefc7067efc18ca711d684d68fdbfc0aad89125dd69d996c307f"
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "826FE1E6B90664BF8E0577EB276814B54C955918F3A526E684ED51FF5E991D1A",
+      "wasm": {
+        "codeId": 3145
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0",
+        "address": "archway12kdwfxns6yjfagmvtkj6cmcgwy982qd8ag2w0c69njajx86r2eaqu285nj",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "sMUSD",
+        "token_contract_address": "archway1pjpwsdert785u7jx7ea4pg9729sgqna8ravp97mn70e53umqzpuqe7ng95"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "5B9C016F146010F05F59FD105F7FFABBEDAFDF3AF2302C1F79462488872852B8",
+      "wasm": {
+        "codeId": 3145,
+        "checksum": "d06e025f4ca6617561242c3afa05d1a1ad94dcda67df23af2ee04f2c2e054914"
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "210C2927B78CC9B9B23C468A32DD97B7D392923300AE9078E4E21FCC6047FEED",
+      "wasm": {
+        "codeId": 3144
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0",
+        "address": "archway1hpfyvs4yawxhzh0atyg6werw347w5hfr0zr96un2kdv5kuvzjdjsx0khsl",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "sMUSD",
+        "token_contract_address": "archway1pjpwsdert785u7jx7ea4pg9729sgqna8ravp97mn70e53umqzpuqe7ng95"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "EB1815D7408A37EF89F1EC4E873A3459C08AE5AFA07A5135271FEBF645E6A5C9",
+      "wasm": {
+        "codeId": 3144,
+        "checksum": "ed2db7a3f410317a0646fa7644758136039a8fbc12f51e6b6427d3c4791277c5"
+      },
+      "contract": {
+        "name": "governance",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "CB91D53236F850D4EA41E8A55C4DC7F84EC510791BDDB4A69995C203D98DCCA8",
+      "wasm": {
+        "codeId": 3143
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0",
+        "address": "archway1pjpwsdert785u7jx7ea4pg9729sgqna8ravp97mn70e53umqzpuqe7ng95",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "name": "stakedMUSD",
+        "symbol": "sMUSD",
+        "decimals": 18,
+        "initial_balances": [],
+        "mint": {
+          "minter": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+        }
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "3393C706C678C91FC1F1F429FE8BBBAAB651DDC305367FD568678D3E5A6EF214",
+      "wasm": {
+        "codeId": 3143,
+        "checksum": "777d4d4181557e2556a3e46e34c2d44654fb652cc99173a8a96894c7cfd08a26"
+      },
+      "contract": {
+        "name": "mosaic-protcol",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
       "txhash": "E41E6977ADC7232E655E1FEBFCB35079B3DCE3B16225D7FE33CE95EBE4E6818F",
       "wasm": {
         "codeId": 3140

@@ -1052,7 +1052,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "staking_rewards"
+name = "staking-rewards"
 version = "0.1.0"
 dependencies = [
  "cosmwasm-schema",

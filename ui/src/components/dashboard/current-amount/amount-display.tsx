@@ -13,8 +13,7 @@ export default function AmountDisplay(props: AmountDisplayProps) {
       <img
         src={props.currency == "mUSDC" ? usdcToken : mosaicToken}
         className="w-6 h-6 md:w-10 md:h-10"
-      />
-      <NumberTicker value={props.amount} />{" "}
+      /> {props.amount == 0 ? 0 :      <NumberTicker value={props.amount} />}
     </p>
   );
 }

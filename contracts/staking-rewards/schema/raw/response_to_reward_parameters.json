@@ -1,21 +1,17 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "InstantiateMsg",
+  "title": "RewardParametersResponse",
   "type": "object",
   "required": [
-    "reward_rate",
-    "reward_token",
-    "staking_token"
+    "last_update_time",
+    "reward_rate"
   ],
   "properties": {
-    "reward_rate": {
+    "last_update_time": {
       "$ref": "#/definitions/Uint64"
     },
-    "reward_token": {
-      "type": "string"
-    },
-    "staking_token": {
-      "type": "string"
+    "reward_rate": {
+      "$ref": "#/definitions/Uint64"
     }
   },
   "additionalProperties": false,

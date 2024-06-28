@@ -44,32 +44,34 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::CreateProposal {desc} => execute::try_create_proposal(deps, _env, info, desc),
+        ExecuteMsg::CreateProposal {desc,title} => execute::try_create_proposal(deps, _env, info, desc,title),
         ExecuteMsg::JoinDao { MemberType } => execute::try_join_dao(deps, _env,info,MemberType ),
-        ExecuteMsg::Vote { id } => execute::try_vote(deps, _env, info, id),
+        ExecuteMsg::Vote { id , value} => execute::try_vote(deps, _env, info, id , value),
     }
 }
 
 pub mod execute {
     use cosmwasm_std::{Addr, Coin, CosmosMsg, Uint128, WasmMsg, WasmQuery};
     use cw20::Cw20QueryMsg;
+    use serde::de::value;
 
     use crate::state::{MemeberType, Proposal, MEMBERS, PROPOSALS, PROPOSAL_COUNT};
 
     use super::*;
-    pub const CREATE_PROPOSAL_COST: Uint128 = Uint128::new(1);
-    pub const VOTE_COST: Uint128 = Uint128::new(1);
+    pub const CREATE_PROPOSAL_COST: Uint128 = Uint128::new(100000000000000000);
+    pub const VOTE_COST: Uint128 = Uint128::new(100000000000000000);
     pub fn try_create_proposal(
         deps: DepsMut,
         env: Env,
         info: MessageInfo,
         desc: String,
+        title: String,
     ) -> Result<Response, ContractError> {
         // Ensure the user has enough tokens to create a proposal
-        let token_balance = query_token_balance(&deps, info.sender.clone())?;
-        if token_balance < CREATE_PROPOSAL_COST {
-            return Err(ContractError::InsufficientFundsProposal {  } );
-        }
+        // let token_balance = query_token_balance(&deps, info.sender.clone())?;
+        // if token_balance < CREATE_PROPOSAL_COST {
+        //     return Err(ContractError::InsufficientFundsProposal {  } );
+        // }
    
         let token_info =TOKEN_INFO.load(deps.storage)?;
          
@@ -81,7 +83,7 @@ pub mod execute {
         let msg: CosmosMsg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
             contract_addr: token_info.token_address.to_string(),
             msg: to_binary(&transfer_msg)?,
-            funds: vec![Coin::new(500000000000000, "aconst")],
+            funds:info.funds,
         });
         let mut proposal_count = PROPOSAL_COUNT.load(deps.storage)?;
         proposal_count += Uint128::new(1);
@@ -90,10 +92,12 @@ pub mod execute {
             id: proposal_count,
             creator: info.sender.clone(),
             description: desc,
-            vote_count: Uint128::zero(),
+            vote_count_yes: Uint128::zero(),
+            vote_count_no: Uint128::zero(),
             start_time: env.block.time.seconds(),
             end_time: env.block.time.seconds() + 604800,
             voters: Vec::new(),
+            title   
         };
     
         PROPOSALS.save(deps.storage, proposal_count.into(), &proposal)?;
@@ -110,6 +114,7 @@ pub mod execute {
         env: Env,
         info: MessageInfo,
         id: Uint128,
+        value: Uint128,
     ) -> Result<Response, ContractError> {
         let mut proposal = 
         match PROPOSALS.load(deps.storage, id.into()) {
@@ -128,11 +133,11 @@ pub mod execute {
             return Err(ContractError::AlreadyVoted {});
         }
     
-        // Ensure the user has enough tokens to vote
-        let token_balance = query_token_balance(&deps, info.sender.clone())?;
-        if token_balance < VOTE_COST {
-            return Err(ContractError::InsufficientFundsVote {  });
-        }
+        // // Ensure the user has enough tokens to vote
+        // let token_balance = query_token_balance(&deps, info.sender.clone())?;
+        // if token_balance < VOTE_COST {
+        //     return Err(ContractError::InsufficientFundsVote {  });
+        // }
     
         let transfer_msg = cw20::Cw20ExecuteMsg::BurnFrom {
             owner: info.sender.to_string(),
@@ -142,11 +147,15 @@ pub mod execute {
         let msg: CosmosMsg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
             contract_addr: token_info.token_address.to_string(),
             msg: to_binary(&transfer_msg)?,
-            funds: vec![Coin::new(500000000000000, "aconst")],
+            funds:info.funds,
         });
 
-    
-        proposal.vote_count += Uint128::new(1);
+        // 0 -> No, 1 -> Yes
+        if value == Uint128::from(1 as u32) {
+            proposal.vote_count_yes += Uint128::new(1);
+        }else{
+            proposal.vote_count_no += Uint128::new(1);
+        }
         
         proposal.voters.push(info.sender);
     
@@ -158,18 +167,18 @@ pub mod execute {
             .add_attribute("proposal_id", id))
     }
 
-    fn query_token_balance(deps: &DepsMut, addr: Addr) -> Result<Uint128, ContractError> {
-    let token_info = TOKEN_INFO.load(deps.storage)?;
-    let balance: Uint128 = deps
-        .querier
-        .query(&cosmwasm_std::QueryRequest::Wasm(WasmQuery::Smart {
-            contract_addr: token_info.token_address.to_string(),
-            msg: to_binary(&Cw20QueryMsg::Balance { address: addr.to_string() })?,
-        }))
-        .map_err(|_| ContractError::TokenQueryFailed {})?;
+    // fn query_token_balance(deps: &DepsMut, addr: Addr) -> Result<Uint128, ContractError> {
+    // let token_info = TOKEN_INFO.load(deps.storage)?;
+    // let balance: Uint128 = deps
+    //     .querier
+    //     .query(&cosmwasm_std::QueryRequest::Wasm(WasmQuery::Smart {
+    //         contract_addr: token_info.token_address.to_string(),
+    //         msg: to_binary(&Cw20QueryMsg::Balance { address: addr.to_string() })?,
+    //     }))
+    //     .map_err(|_| ContractError::TokenQueryFailed {})?;
 
-    Ok(balance)
-    }
+    // Ok(balance)
+    // }
 
 
     pub fn try_join_dao(
@@ -218,6 +227,8 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
 }
 
 pub mod query {
+    use std::ops::Add;
+
     use cosmwasm_std::{Addr, Order, QueryResponse, StdError};
 
     use crate::{msg::{Members, Proposals}, state::{MemeberType, Proposal, MEMBERS, PROPOSALS }};
@@ -227,7 +238,7 @@ pub mod query {
 
     pub fn query_voters_count(deps: Deps, id: Uint128) -> Result<QueryResponse, StdError> {
         let proposal = PROPOSALS.load(deps.storage, id.into())?;
-        to_binary(&proposal.vote_count)
+        to_binary(&(proposal.vote_count_yes, proposal.vote_count_no))
     }
 
 

@@ -9,7 +9,15 @@ import Login from "./pages/login";
 import Connect from "./pages/connect";
 import Governance from "./pages/governance";
 
+import { useEffect } from "react";
+import { useWalletStore } from "./hooks/useStore";
 function App() {
+  const {walletAddress, setWalletAddress } = useWalletStore()
+  useEffect(()=>{
+    if(localStorage.getItem("walletAddress")){
+      setWalletAddress(localStorage.getItem("walletAddress"))
+    }
+  },[])
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Router>

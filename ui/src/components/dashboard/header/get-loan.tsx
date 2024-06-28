@@ -16,9 +16,7 @@ import { SigningArchwayClient, StdFee, Coin } from '@archwayhq/arch3.js';
 import { ChainInfo } from "@/lib/chain";
 const EXCHANGE_RATE_API = import.meta.env.VITE_EXCHANGE_RATE_API
 const dataFetch = async () => {
-  console.log(EXCHANGE_RATE_API)
   const res = await axios.get(EXCHANGE_RATE_API)
-  console.log(res)
   const data = await res.data
   return data
 }
@@ -41,12 +39,10 @@ export default function GetLoan() {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
-      console.log(USDAmount)
       const data = await dataFetch()
       const price = data.data.price;
-      console.log(price)
       if (price) {
-        setArchAmount(USDAmount / (price*100))
+        setArchAmount(USDAmount / (price * 100))
       }
     }, 750)
 
@@ -96,15 +92,19 @@ export default function GetLoan() {
 
   const callContract = async () => {
     if (window.keplr && walletAddress) {
+
       const offlineSigner = window.keplr.getOfflineSigner(ChainInfo.chainId);
       const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
       const CONTRACT_ADDRESS = import.meta.env.VITE_VAULT_CONTRACT;
       const TOKEN_CONTRACT = import.meta.env.VITE_TOKEN_CONTRACT;
+      const STAKING_CONTRCAT = import.meta.env.VITE_STAKING_REWARDS_CONTRACT;
+      const STAKING_TOKEN = import.meta.env.VITE_STAKED_TOKEN_CONTRACT;
+      const GOVENANCE_CONTRACT = import.meta.env.VITE_GOVERNANCE_CONTRACT;
 
       let entrypoint = {
         deposit: {
           amount_out_collateral: BigInt(USDAmount * 10 ** 10).toString(),
-          amount_in_collateral: BigInt(ArchAmount* 10**18).toString()
+          amount_in_collateral: BigInt(ArchAmount * 10 ** 18).toString()
         }
       }
       let funds: Coin[] = [{ amount: BigInt((ArchAmount + 0.1) * 10 ** 18).toString(), denom: "aconst" }]
@@ -116,23 +116,50 @@ export default function GetLoan() {
         ],
         gas: "3000000"
       }
-      const depositInstruction : ExecuteInstruction ={
-        contractAddress:CONTRACT_ADDRESS,
-        msg:entrypoint,
+      const depositInstruction: ExecuteInstruction = {
+        contractAddress: CONTRACT_ADDRESS,
+        msg: entrypoint,
         funds
       }
       let increase_allowance = {
         increase_allowance: {
-          spender: CONTRACT_ADDRESS,
-          amount: BigInt(10 ** 18).toString()
+          spender: GOVENANCE_CONTRACT,
+          amount: BigInt(10 ** 25).toString()
         }
       }
       const increaseAllowance: ExecuteInstruction = {
         contractAddress: TOKEN_CONTRACT,
-        msg:increase_allowance
-
+        msg: increase_allowance
       }
-      let tx = await CosmWasmClient.executeMultiple(walletAddress,  [depositInstruction,increaseAllowance], gas);
+      const increaseAllowanceStakingToken: ExecuteInstruction = {
+        contractAddress: STAKING_TOKEN,
+        msg: increase_allowance
+      }
+
+      const stake_reward = {
+        stake: {
+          amount: BigInt(USDAmount * 10 ** 18).toString()
+        }
+      }
+      let funds_my: Coin[] = [{ amount: BigInt((0.1) * 10 ** 18).toString(), denom: "aconst" }]
+      const stakingReward: ExecuteInstruction = {
+        contractAddress: STAKING_CONTRCAT,
+        msg: stake_reward,
+        funds:funds_my
+      }
+
+
+      const join_dao = {
+        join_dao: {
+          amount: BigInt(USDAmount * 10 ** 18).toString()
+        }
+      }
+      const join_Dao: ExecuteInstruction = {
+        contractAddress: GOVENANCE_CONTRACT,
+        msg: stake_reward,
+      }
+
+      let tx = await CosmWasmClient.executeMultiple(walletAddress, [depositInstruction, increaseAllowance, increaseAllowanceStakingToken, stakingReward], gas);
       console.log(tx)
 
     }

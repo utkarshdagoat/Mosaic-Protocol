@@ -44,7 +44,6 @@ export default function LoginCard() {
       )
       .then((res) => {
         if (res.status === 200) {
-          console.log("Logged In");
           toast({
             title: "Logged In",
             description: "Getting things ready for you!",

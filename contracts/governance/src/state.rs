@@ -23,10 +23,12 @@ pub struct Proposal {
     pub id:Uint128,
     pub creator: Addr,
     pub description:String,
-    pub vote_count:Uint128,
+    pub vote_count_yes:Uint128,
+    pub vote_count_no:Uint128,
     pub voters:Vec<Addr>,
     pub start_time:u64,
-    pub end_time:u64
+    pub end_time:u64,
+    pub title: String
 }
 
 #[cw_serde]
