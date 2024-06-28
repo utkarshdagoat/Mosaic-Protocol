@@ -39,20 +39,20 @@
     {
       "type": "object",
       "required": [
-        "get_stake_on_deposit"
+        "get_dynamic_interst_rates"
       ],
       "properties": {
-        "get_stake_on_deposit": {
+        "get_dynamic_interst_rates": {
           "type": "object",
           "required": [
             "address",
-            "timePeriod"
+            "amount"
           ],
           "properties": {
             "address": {
               "$ref": "#/definitions/Addr"
             },
-            "timePeriod": {
+            "amount": {
               "$ref": "#/definitions/Uint128"
             }
           },
@@ -64,10 +64,23 @@
     {
       "type": "object",
       "required": [
-        "get_dynamic_interst_rates"
+        "get_fixed_interst_rates"
       ],
       "properties": {
-        "get_dynamic_interst_rates": {
+        "get_fixed_interst_rates": {
+          "type": "object",
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "get_repayed_debt"
+      ],
+      "properties": {
+        "get_repayed_debt": {
           "type": "object",
           "required": [
             "address"
@@ -85,11 +98,19 @@
     {
       "type": "object",
       "required": [
-        "get_fixed_interst_rates"
+        "get_total_debt"
       ],
       "properties": {
-        "get_fixed_interst_rates": {
+        "get_total_debt": {
           "type": "object",
+          "required": [
+            "address"
+          ],
+          "properties": {
+            "address": {
+              "$ref": "#/definitions/Addr"
+            }
+          },
           "additionalProperties": false
         }
       },

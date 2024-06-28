@@ -28,7 +28,6 @@ interface AllProps {
   props: KycProps;
 }
 export default function KycWrapper({ children, props }: AllProps) {
-  console.log(UploadButton);
   const [loading, setLoading] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -280,7 +279,6 @@ export default function KycWrapper({ children, props }: AllProps) {
                       console.error(e);
                     }}
                     onBeforeUploadBegin={(file) => {
-                      console.log(file);
                       return file;
                     }}
                   />

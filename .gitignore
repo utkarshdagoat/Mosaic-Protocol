@@ -7,7 +7,7 @@
 
 # Text file backups
 **/*.rs.bk
-
+node_modules/
 # macOS
 .DS_Store
 

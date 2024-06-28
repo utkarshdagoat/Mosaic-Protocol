@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@archwayhq/arch3.js": "^0.7.0"
+  }
+}

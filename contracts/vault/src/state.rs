@@ -3,10 +3,14 @@ use cosmwasm_std::{Addr, Uint128};
 use cw_storage_plus::{Item, Map ,};
 
 
+// Total supply of Musd minted
 pub const TOTAL_SUPPLY: Item<Uint128> = Item::new("total_supply");
-pub const BALANCE_OF: Map<Addr,Uint128>=Map::new("balance_of");
+// Map of user addr => amount of const
+pub const BALANCE_OF: Map<Addr,(Uint128,Uint128)>=Map::new("balance_of");
 // Map of user addr => (loanIndex => timePeriod)
+pub const REPAYED : Map<Addr,Uint128> = Map::new("debt_of");
 
+pub const TOTAL_LOANS: Item<Uint128> = Item::new("loan_length");
 
 #[cw_serde]
 pub struct  TokenInfo{

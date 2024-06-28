@@ -1,4 +1,4 @@
-use cosmwasm_std::StdError;
+use cosmwasm_std::{Addr, StdError, Uint128};
 use thiserror::Error;
 
 #[derive(Error, Debug,PartialEq)]
@@ -14,4 +14,11 @@ pub enum ContractError {
 
     #[error("To Do Error")]
     ToDo {},
+
+
+    #[error("Unsufficent funds")]
+    UnsufficentFunds {
+        user:Addr,
+        amount:Uint128
+    }
 }
