@@ -1,26 +1,42 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
+use cosmwasm_std::Uint128;
+use cosmwasm_std::{Addr };
+
+use crate::state::{MemeberType, Proposal};
+
 
 #[cw_serde]
 pub struct InstantiateMsg {
-    pub count: i32,
+    pub token_symbol: String,
+    pub token_contract_address: Addr, 
 }
 
-#[cw_serde]
-pub enum ExecuteMsg {
-    Increment {},
-    Reset { count: i32 },
-}
+
+
 
 #[cw_serde]
+pub struct Proposals(pub Vec<Proposal>);
+
+#[cw_serde]
+pub struct  Members(pub Vec<(Addr,MemeberType)>);
+#[cw_serde]
+
+
 #[derive(QueryResponses)]
 pub enum QueryMsg {
     // GetCount returns the current count as a json-encoded number
-    #[returns(GetCountResponse)]
-    GetCount {},
-}
+    #[returns(Uint128)]
+    GetVotersCount { id:Uint128},
 
-// We define a custom struct for each query response
+    #[returns(Proposals)]
+    GetProposals {},
+
+    #[returns(Members)]
+    GetMembers {}
+}
 #[cw_serde]
-pub struct GetCountResponse {
-    pub count: i32,
+pub enum ExecuteMsg {
+    CreateProposal {desc:String},
+    Vote {id: Uint128},
+    JoinDao {MemberType: Uint128}
 }

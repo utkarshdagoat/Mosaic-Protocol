@@ -96,7 +96,7 @@ pub mod execute {
         balance.0 += amount_in_collateral;
         balance.1 += amount_out_collateral;
         BALANCE_OF.save(deps.storage, info.sender.clone(), &balance)?;
-
+        
         let transfer_from_msg = cw20::Cw20ExecuteMsg::Mint {
             recipient: info.sender.to_string(),
             amount: amount_out_collateral.into(),
@@ -163,14 +163,10 @@ pub mod execute {
         // Transfer the funds from contract to user
         let transfer_const = BankMsg::Send {
             to_address: info.sender.clone().to_string(),
-            amount: coins(amount_in_collateral.into(), "aconst"),
+            amount: coins(amount_out_collateral.into(), "aconst"),
         };
 
-        let msg_transfer_const: CosmosMsg = CosmosMsg::Wasm(cosmwasm_std::WasmMsg::Execute {
-            contract_addr: token_info.token_address.to_string(),
-            msg: to_binary(&transfer_const)?,
-            funds: vec![Coin::new(5000000000000000, "aconst")],
-        });
+        let msg_transfer_const: CosmosMsg = CosmosMsg::Bank(transfer_const);
 
         Ok(Response::new()
             .add_attribute("action", "withdraw")
@@ -285,7 +281,7 @@ pub mod query {
     }
 
     pub fn get_repaid(deps: Deps, addr: Addr) -> Result<QueryResponse, StdError> {
-        let repay = REPAYED.load(deps.storage, addr)?;
+        let repay = REPAYED.load(deps.storage, addr).unwrap_or(Uint128::zero());
         to_binary(&repay)
     }
 }

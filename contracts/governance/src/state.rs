@@ -1,13 +1,43 @@
+use std::ops::Add;
+
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use cosmwasm_schema::cw_serde;
+use cosmwasm_std::{Addr, Timestamp, Uint128};
+use cw_storage_plus::{Item, Map};
 
-use cosmwasm_std::Addr;
-use cw_storage_plus::Item;
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, JsonSchema)]
-pub struct State {
-    pub count: i32,
-    pub owner: Addr,
+#[cw_serde]
+pub enum MemeberType {
+    Core,
+    Creater,
+    Staker,
+    Dev
 }
 
-pub const STATE: Item<State> = Item::new("state");
+pub const  MEMBERS: Map<Addr,MemeberType> = Map::new("members");
+
+
+#[cw_serde]
+pub struct Proposal {
+    pub id:Uint128,
+    pub creator: Addr,
+    pub description:String,
+    pub vote_count:Uint128,
+    pub voters:Vec<Addr>,
+    pub start_time:u64,
+    pub end_time:u64
+}
+
+#[cw_serde]
+pub struct  TokenInfo{
+    pub token_denom: String,
+    pub token_address: Addr
+
+}
+pub const TOKEN_INFO: Item<TokenInfo> = Item::new("token_info");
+
+
+
+pub const PROPOSALS: Map<u128,Proposal> = Map::new("proposal");
+pub const PROPOSAL_COUNT: Item<Uint128> = Item::new("proposal_length"); 

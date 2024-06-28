@@ -2,6 +2,64 @@
   "deployments": [
     {
       "action": "instantiate",
+      "txhash": "E41E6977ADC7232E655E1FEBFCB35079B3DCE3B16225D7FE33CE95EBE4E6818F",
+      "wasm": {
+        "codeId": 3140
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway1rhj0pw4zx78up5cgcpdpezpkada33hhhhrrx0h4usnhmftp2e46qrt5htr",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1p0cj58ghvfuyxqxcdt3tj6lmcgnaunjzvpxqzy52k45pe67r9hgqvk05kq"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "AC94043C55F048804D5F6EBE45037E61FAA12A2D7C2009959B63E5302440A31B",
+      "wasm": {
+        "codeId": 3140,
+        "checksum": "31acef83d39b9f611395e38d082cf48758e6fdd29e2a7f7f6f9108cdcf743c1d"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
+      "txhash": "7F5238A54F140CA668EB43573B315ABB21A84AD1A39724A60648FBB4B68F79BC",
+      "wasm": {
+        "codeId": 3138
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway100pmt95fzrx78uv9xdhvcgfx8v3fctz9lj8t9ss98pjmax288akqlmxcnw",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1p0cj58ghvfuyxqxcdt3tj6lmcgnaunjzvpxqzy52k45pe67r9hgqvk05kq"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "A478403C58F3FF566925784574437BCAB2E03B168A27711FF6698DDC15AAA7F1",
+      "wasm": {
+        "codeId": 3138,
+        "checksum": "0b14edda5a2b8d4599c18da49152088539d6539d71c61b4f4968686b106d4132"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
       "txhash": "ACB6A244EBCA95F4EA622FA7217E8BDB1AD59D7A2D999FBA4C5911EF73648170",
       "wasm": {
         "codeId": 3122

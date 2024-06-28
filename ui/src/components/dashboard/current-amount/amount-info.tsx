@@ -40,7 +40,16 @@ export default function AmountInfo() {
 
       let tx = await CosmWasmClient.queryContractSmart(CONTRACT_ADDRESS,entrypoint);
       console.log(tx)
-      setMUSDC(tx[1]/10**10)
+
+      // let entrypoint_repayed = {
+      //   get_repayed_debt: {
+      //    address:walletAddress
+      //   }
+      // }
+
+      // let repayed = await CosmWasmClient.queryContractSmart(CONTRACT_ADDRESS,entrypoint_repayed);
+      // console.log(tx)
+      setMUSDC((tx[1] )/10**10)
     }
   }
   useEffect(()=>{
