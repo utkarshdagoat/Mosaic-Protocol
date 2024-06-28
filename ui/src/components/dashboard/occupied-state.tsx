@@ -8,6 +8,7 @@ export default function OccupiedState() {
       <OverviewCards />
       <AmountInfo />
       <RedeemCollateralModal />
+
     </>
   );
 }

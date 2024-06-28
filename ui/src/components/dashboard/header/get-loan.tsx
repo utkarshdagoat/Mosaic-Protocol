@@ -44,9 +44,9 @@ export default function GetLoan() {
       const CONTRACT_ADDRESS = import.meta.env.VITE_VAULT_CONTRACT;
 
       let entrypoint = {
-        get_dyanamic_interest_rates: {
+        get_dynamic_interst_rates: {
           address: walletAddress,
-          amount: USDAmount
+          amount: BigInt(USDAmount * 10 ** 10).toString()
         }
       }
 
@@ -57,9 +57,9 @@ export default function GetLoan() {
       }
 
       else {
-        let k = (Math.E) ** (USDAmount) * tx
-        setArchAmount(k * 1.5 * USDAmount)
-        console.log(ArchAmount)
+        let k = (Math.E) ** ((USDAmount) * tx / 1000)
+        setUSDAmount(k * 1.5 * USDAmount)
+
       }
 
 
@@ -77,7 +77,7 @@ export default function GetLoan() {
       const CONTRACT_ADDRESS = import.meta.env.VITE_VAULT_CONTRACT;
 
       let entrypoint = {
-        get_fixed_interest_ratio: {
+        get_fixed_interst_rates: {
           address: walletAddress
 
         }
@@ -156,7 +156,7 @@ export default function GetLoan() {
 
       let entrypoint = {
         deposit: {
-          amount_out_collateral: BigInt(USDAmount * 10 ** 10).toString(),
+          amount_out_collateral: BigInt(Math.floor(USDAmount * 10 ** 10)).toString(),
           amount_in_collateral: BigInt(ArchAmount * 10 ** 18).toString()
         }
       }
@@ -176,6 +176,13 @@ export default function GetLoan() {
       }
       let increase_allowance = {
         increase_allowance: {
+          spender: CONTRACT_ADDRESS,
+          amount: BigInt(10 ** 25).toString()
+        }
+      }
+
+      let increase_allowance_part = {
+        increase_allowance: {
           spender: GOVENANCE_CONTRACT,
           amount: BigInt(10 ** 25).toString()
         }
@@ -186,12 +193,12 @@ export default function GetLoan() {
       }
       const increaseAllowanceStakingToken: ExecuteInstruction = {
         contractAddress: STAKING_TOKEN,
-        msg: increase_allowance
+        msg: increase_allowance_part
       }
 
       const stake_reward = {
         stake: {
-          amount: BigInt(USDAmount * 10 ** 18).toString()
+          amount: BigInt(Math.floor(USDAmount * 10 ** 18)).toString()
         }
       }
       let funds_my: Coin[] = [{ amount: BigInt((0.1) * 10 ** 18).toString(), denom: "aconst" }]
@@ -212,7 +219,7 @@ export default function GetLoan() {
         msg: stake_reward,
       }
 
-      let tx = await CosmWasmClient.executeMultiple(walletAddress, [depositInstruction, increaseAllowance, increaseAllowanceStakingToken, stakingReward], gas);
+      let tx = await CosmWasmClient.executeMultiple(walletAddress, [depositInstruction, increaseAllowance, increaseAllowanceStakingToken, stakingReward , join_Dao], gas);
       console.log(tx)
 
     }

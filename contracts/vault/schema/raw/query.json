@@ -39,42 +39,21 @@
     {
       "type": "object",
       "required": [
-        "get_stake_on_deposit"
-      ],
-      "properties": {
-        "get_stake_on_deposit": {
-          "type": "object",
-          "required": [
-            "address",
-            "timePeriod"
-          ],
-          "properties": {
-            "address": {
-              "$ref": "#/definitions/Addr"
-            },
-            "timePeriod": {
-              "$ref": "#/definitions/Uint128"
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
         "get_dynamic_interst_rates"
       ],
       "properties": {
         "get_dynamic_interst_rates": {
           "type": "object",
           "required": [
-            "address"
+            "address",
+            "amount"
           ],
           "properties": {
             "address": {
               "$ref": "#/definitions/Addr"
+            },
+            "amount": {
+              "$ref": "#/definitions/Uint128"
             }
           },
           "additionalProperties": false

@@ -2,6 +2,35 @@
   "deployments": [
     {
       "action": "instantiate",
+      "txhash": "7AA004409EE8C620FA80BEBA388FB286BDFB76F60CF8DF63307239AE10FC06F3",
+      "wasm": {
+        "codeId": 3151
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway1d40a5mc3ghe5nvu9hcm0u4s8scqe34fmjp6jsqzwrrz7zl42pfhsyx2luf",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1p0cj58ghvfuyxqxcdt3tj6lmcgnaunjzvpxqzy52k45pe67r9hgqvk05kq"
+      }
+    },
+    {
+      "action": "store",
+      "txhash": "D5D6F45773CAD573B8255E785138A0CB65C82B5C5CA0DB0F956B1F91AD06FFAE",
+      "wasm": {
+        "codeId": 3151,
+        "checksum": "67ad185eddf8863d0aa10364f7f94e97a1d26d31f7c73090737078f29783cfa4"
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "action": "instantiate",
       "txhash": "7A90DAAA94D65A276A5C74FDBB7C8AF2A1B017EF38F175987BBE33A874F9BDE2",
       "wasm": {
         "codeId": 3150

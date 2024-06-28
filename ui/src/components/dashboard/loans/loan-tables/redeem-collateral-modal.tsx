@@ -76,6 +76,7 @@ export default function RedeemCollateralModal() {
         description: "txHash: " + tx.transactionHash,
       });
       } catch (error) {
+      console.log(error)
         toast({
           title: "Error",
           description: "Error redeeming collateral",

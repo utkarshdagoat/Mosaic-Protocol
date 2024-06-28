@@ -31,6 +31,7 @@ declare global {
 
 
 type Proposal = {
+  id: string;
   title: string;
   description: string;
   hasVoted: boolean;
@@ -41,38 +42,8 @@ type Proposal = {
 };
 
 export default function Proposals() {
-  const sampleProposals: Proposal[] = [
-    {
-      title: "Proposal 1",
-      description: "This is a description for proposal 1",
-      hasVoted: false,
-      yesCount: 72,
-      noCount: 33,
-      startTime: new Date(),
-      endTime: new Date(),
-    },
-    {
-      title: "Proposal 2",
-      description: "This is a description for proposal 2",
-      hasVoted: true,
-      yesCount: 15,
-      noCount: 88,
-    },
-    {
-      title: "Proposal 3",
-      description: "This is a description for proposal 3",
-      hasVoted: false,
-      yesCount: 47,
-      noCount: 62,
-    },
-    {
-      title: "Proposal 3",
-      description: "This is a description for proposal 3",
-      hasVoted: false,
-      yesCount: 47,
-      noCount: 62,
-    },
-  ];
+  const [proposals, setProposals] = useState<Proposal[]>([]);
+
   const { walletAddress } = useWalletStore()
   
 
@@ -88,12 +59,20 @@ export default function Proposals() {
       }
 
       let tx = await CosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, entrypoint);
-      console.log("proposals", tx)
+      console.log("props",tx)
       if (tx.length > 0) {
-        console.log("here")
         for (let i = 0; i < tx.length; i++) {
-          let role = tx[i][1]
-          let address = tx[i][0]
+          let proposal:Proposal = {
+            id: tx[i].id,
+            title: tx[i].title,
+            description: tx[i].description,
+            hasVoted: tx[i].voters.find((voter:string) => voter == walletAddress) ? true : false,
+            yesCount: Number(tx[i].vote_count_yes),
+            noCount: Number(tx[i].vote_count_no),
+            startTime: new Date(tx[i].start_time*1000),
+            endTime: new Date(tx[i].end_time*1000)
+          }
+          setProposals(prev_state => [...prev_state, proposal])
         }
       }
     }
@@ -103,6 +82,7 @@ export default function Proposals() {
   useEffect(() => {
     ProposasQuery()
   }, [walletAddress])
+  console.log(proposals)  
   return (
     <div className="pr-4 pt-4">
       <div className="flex justify-between items-center">
@@ -110,7 +90,7 @@ export default function Proposals() {
         <AddProposal />
       </div>
       <div className="space-y-4 mt-4">
-        {sampleProposals.map((proposal) => (
+        {proposals.map((proposal) => (
           <ProposalCard key={proposal.title} proposal={proposal} />
         ))}
       </div>
@@ -212,9 +192,49 @@ function AddProposal() {
 }
 
 function ProposalCard({ proposal }: { proposal: Proposal }) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [value,setVal] = useState(0)
+  const walletAddress = useWalletStore().walletAddress 
+  const {toast} = useToast()
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (window.keplr && walletAddress) {
+      const offlineSigner = window.keplr.getOfflineSigner(ChainInfo.chainId);
+      const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
+      const CONTRACT_ADDRESS = import.meta.env.VITE_GOVERNANCE_CONTRACT;
+
+      let entrypoint = {
+        vote: {
+          id: proposal.id,
+          value:value.toString()
+        }
+      }
+      let funds: Coin[] = [{ amount: BigInt((0.01) * 10 ** 18).toString(), denom: "aconst" }]
+      let gas: StdFee = {
+        amount: [{
+          amount: "300000000",
+          denom: "aconst"
+        },
+        ],
+        gas: "3000000"
+      }
+      try {
+      let tx = await CosmWasmClient.execute(walletAddress,CONTRACT_ADDRESS,entrypoint, gas,"memo",funds);
+      console.log(tx)
+      toast({
+        title: "Success",
+        description: "txHash: " + tx.transactionHash,
+      });
+      } catch (error) {
+        console.log(error)
+        toast({
+          title: "Error",
+          description: "Error creating proposal check your funds",
+          variant:"destructive"
+        });
+      } 
+    }
   };
+
   return (
     <Card>
       <CardHeader>
@@ -237,11 +257,11 @@ function ProposalCard({ proposal }: { proposal: Proposal }) {
             >
               <RadioGroup className="inline-flex gap-4">
                 <div className="flex items-center space-x-1">
-                  <RadioGroupItem value="yes" id="yes" />
+                  <RadioGroupItem value="yes" id="yes" onClick={()=>setVal(1)} />
                   <Label htmlFor="yes">Yes</Label>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <RadioGroupItem value="no" id="no" />
+                  <RadioGroupItem value="no" id="no" onClick={()=>setVal(0)} />
                   <Label htmlFor="no">No</Label>
                 </div>
               </RadioGroup>
@@ -269,12 +289,15 @@ function VoteChart({
   yesCount: number;
   noCount: number;
 }) {
-  const yesPercentage =
-    ((yesCount / (yesCount + noCount)) * 100).toFixed(0) + "%";
-  const noPercentage =
-    ((noCount / (yesCount + noCount)) * 100).toFixed(0) + "%";
-  console.log(yesPercentage);
-  console.log(noPercentage);
+  const [yesPercentage, setYesPercentage] = useState("0%");
+  const [noPercentage, setNoPercentage] = useState("0%");
+  useEffect(()=>{
+    if(yesCount !== 0 || noCount !== 0){
+      setYesPercentage(((yesCount / (yesCount + noCount)) * 100).toFixed(0) + "%");
+      setNoPercentage(((noCount / (yesCount + noCount)) * 100).toFixed(0) + "%");
+    }
+  },[])
+  
   return (
     <div className="grid grid-cols-2 gap-2">
       <div className="w-50 border p-4 rounded-sm">
