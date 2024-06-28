@@ -6,6 +6,7 @@ import { ChainInfo } from "@/lib/chain";
 import { useToast } from "@/components/ui/use-toast";
 import { Window as KeplrWindow } from "@keplr-wallet/types";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -16,6 +17,7 @@ export default function DashboardHeader() {
   const { user } = useUserStore();
   const { walletAddress, setWalletAddress } = useWalletStore();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const connectWalletHandle = async () => {
     const chainId = ChainInfo.chainId;
@@ -48,6 +50,7 @@ export default function DashboardHeader() {
       </h1>
       <div className="flex gap-6">
         <Button  onClick={connectWalletHandle}>{walletAddress === null ? "Connect Wallet" : walletAddress}</Button>
+        <Button onClick={()=>navigate("/governance")}>Go To Governance</Button>
         <GetLoan />
       </div>
     </div>
