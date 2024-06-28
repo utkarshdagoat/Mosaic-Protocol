@@ -172,8 +172,6 @@ pub mod execute {
             funds: vec![Coin::new(5000000000000000, "aconst")],
         });
 
-
-
         Ok(Response::new()
             .add_attribute("action", "withdraw")
             .add_messages(vec![msg, msg_transfer_const]))
@@ -225,10 +223,6 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> Result<QueryResponse, StdE
     match msg {
         QueryMsg::GetTotalSupply {} => query::get_total_supply(deps),
         QueryMsg::GetBalanceOf { address } => query::get_balance_of(deps, address),
-        QueryMsg::GetStakeOnDeposit {
-            address,
-            timePeriod,
-        } => query::get_stake_on_deposit(deps, address, timePeriod),
         QueryMsg::GetDynamicInterstRates { address } => {
             query::get_dyanamic_interest_rates(deps, address)
         }
@@ -240,39 +234,14 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> Result<QueryResponse, StdE
 
 pub mod query {
 
-    use core::time;
-
     use super::*;
-
-    pub fn get_stake_on_deposit(
-        deps: Deps,
-        addr: Addr,
-        time_period: Uint128,
-    ) -> Result<QueryResponse, StdError> {
-        let token_info = TOKEN_INFO.load(deps.storage)?;
-        let mut balance = BALANCE_OF
-            .load(deps.storage, addr.clone())
-            .unwrap_or((Uint128::zero(), Uint128::zero()));
-        //let balance_of=get_token_balance_of(&deps, info.sender.clone(), token_info.token_address.clone())?;
-        //time period should be in months
-        let const_ratio = Uint128::one();
-        // let amount = balance / TOTAL_SUPPLY.load(deps.storage)? * time_period * const_ratio;
-        // let reward = amount / time_period;
-        to_binary(&balance.0)
-        //this returns the total stake we would have to give to the person out of the total balance we have in our vault, if he deposited the tokens for one month based on time period the person has submitted us
-        //now we can use the archaway js to simply return the value of stake we would have to send him when he pays the loan for that month
-        // we can give him the stake in the form of tokens he submitted us.
-        // also can setup a constant here to get a proper value I have set it to 1 for now
-    }
 
     pub fn get_dyanamic_interest_rates(deps: Deps, addr: Addr) -> Result<QueryResponse, StdError> {
         let token_info = TOKEN_INFO.load(deps.storage)?;
         let mut balance = BALANCE_OF
             .load(deps.storage, addr.clone())
             .unwrap_or((Uint128::zero(), Uint128::zero()));
-        //let balance_of=get_token_balance_of(&deps, info.sender.clone(), token_info.token_address.clone())?;
         // let contribution = balance / TOTAL_SUPPLY.load(deps.storage)?;
-        //aise to ye har baar zero aajega as int hona chaahiye
         // this represents the contribution of the user in the total balance of the vault
         // from this contribution we can calcualte the dyanamic rate , and it will change with the time period(each month simply)
         //here lambda would represent the long term average of the contribution of the user in the total balance of the vault
@@ -286,10 +255,10 @@ pub mod query {
         //where the lambda would be replaced by the contribution value of the user
         // this wont be applicable for the starting users though as we would have to take the average of the contribution of the users in the vault
         // and then we can give the interest rate to the users based on the curve we have chosen
-
-        let dyanamic_interest_ratio = Uint128::new(10);
-        to_binary(&dyanamic_interest_ratio)
-        // abhi constant bhej rha hun wahan js mei sahi krna hai iss calculation ko , kyonki yahan saara int mei ho rha hai
+        let contrib_inverse = TOTAL_SUPPLY.load(deps.storage)? / balance.0;
+        let dynamic_interest =
+            ONE_INT + Uint128::from(contrib_inverse) + contrib_inverse * contrib_inverse;
+        to_binary(&dynamic_interest)
     }
 
     pub fn get_fixed_interest_ratio(deps: Deps) -> Result<QueryResponse, StdError> {
