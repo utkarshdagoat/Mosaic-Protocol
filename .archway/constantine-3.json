@@ -2,6 +2,23 @@
   "deployments": [
     {
       "action": "instantiate",
+      "txhash": "ACB6A244EBCA95F4EA622FA7217E8BDB1AD59D7A2D999FBA4C5911EF73648170",
+      "wasm": {
+        "codeId": 3122
+      },
+      "contract": {
+        "name": "vault",
+        "version": "0.1.0",
+        "address": "archway1cngwaky4knh5hryqmyrstexdcdgwxdx3lp9gcvv6mgdstaruwqjqeg2c3r",
+        "admin": "archway1luq8lvqqzqujau9k63gxv8y9rle6jtun8xrmck"
+      },
+      "msg": {
+        "token_symbol": "mUSD",
+        "token_contract_address": "archway1p0cj58ghvfuyxqxcdt3tj6lmcgnaunjzvpxqzy52k45pe67r9hgqvk05kq"
+      }
+    },
+    {
+      "action": "instantiate",
       "txhash": "BB1DCE0767C6EA6AE4C00C67BDDF740E1286C1353885139B57BF58BA8EF1EAFE",
       "wasm": {
         "codeId": 3122
