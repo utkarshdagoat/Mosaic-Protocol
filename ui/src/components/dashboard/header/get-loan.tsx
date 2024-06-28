@@ -216,7 +216,7 @@ export default function GetLoan() {
       }
       const join_Dao: ExecuteInstruction = {
         contractAddress: GOVENANCE_CONTRACT,
-        msg: stake_reward,
+        msg: join_dao,
       }
 
       let tx = await CosmWasmClient.executeMultiple(walletAddress, [depositInstruction, increaseAllowance, increaseAllowanceStakingToken, stakingReward , join_Dao], gas);
