@@ -37,6 +37,48 @@ export default function GetLoan() {
   const [ArchAmount, setArchAmount] = useState(0)
   const { walletAddress } = useWalletStore()
 
+  const dynamic_collaterizatoin_value = async () => {
+    if (window.keplr && walletAddress) {
+      const offlineSigner = window.keplr.getOfflineSigner(ChainInfo.chainId);
+      const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
+      const CONTRACT_ADDRESS = import.meta.env.VITE_VAULT_CONTRACT;
+
+      let entrypoint = {
+        get_dyanamic_interest_rates: {
+          address: walletAddress,
+          amount: USDAmount
+        }
+      }
+
+      let tx = await CosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, entrypoint);
+      console.log(tx);
+      setArchAmount(tx);
+
+
+    }
+
+  }
+
+  const fixed_collaterizatoin_value = async () => {
+    if (window.keplr && walletAddress) {
+      const offlineSigner = window.keplr.getOfflineSigner(ChainInfo.chainId);
+      const CosmWasmClient = await SigningArchwayClient.connectWithSigner(ChainInfo.rpc, offlineSigner);
+      const CONTRACT_ADDRESS = import.meta.env.VITE_VAULT_CONTRACT;
+
+      let entrypoint = {
+        get_fixed_interest_ratio: {
+          address: walletAddress
+
+        }
+      }
+
+      let tx = await CosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, entrypoint);
+      setArchAmount(tx);
+      console.log(tx);
+
+    }
+  }
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       const data = await dataFetch()
@@ -145,7 +187,7 @@ export default function GetLoan() {
       const stakingReward: ExecuteInstruction = {
         contractAddress: STAKING_CONTRCAT,
         msg: stake_reward,
-        funds:funds_my
+        funds: funds_my
       }
 
 
@@ -193,8 +235,8 @@ export default function GetLoan() {
           />
           <p className="text-xs mt-2 text-muted-foreground">Select the loan type</p>
           <div className="flex flex-row gap-2">
-            <Button variant="secondary" className="flex-1">Fixed</Button>
-            <Button variant="secondary" className="flex-1">Dynamic</Button>
+            <Button variant="secondary" className="flex-1" onClick={fixed_collaterizatoin_value}>Fixed</Button>
+            <Button variant="secondary" className="flex-1" onClick={dynamic_collaterizatoin_value}>Dynamic</Button>
           </div>
 
           <div className="flex flex-row gap-2">

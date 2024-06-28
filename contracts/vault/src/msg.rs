@@ -33,7 +33,7 @@ pub enum QueryMsg {
     GetBalanceOf { address: Addr },
 
     #[returns(Uint128)]
-    GetDynamicInterstRates { address: Addr },
+    GetDynamicInterstRates { address: Addr ,amount:Uint128},
 
     #[returns(Uint128)]
     GetFixedInterstRates {},

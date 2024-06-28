@@ -219,8 +219,8 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> Result<QueryResponse, StdE
     match msg {
         QueryMsg::GetTotalSupply {} => query::get_total_supply(deps),
         QueryMsg::GetBalanceOf { address } => query::get_balance_of(deps, address),
-        QueryMsg::GetDynamicInterstRates { address } => {
-            query::get_dyanamic_interest_rates(deps, address)
+        QueryMsg::GetDynamicInterstRates { address ,amount} => {
+            query::get_dyanamic_interest_rates(deps, address,amount)
         }
         QueryMsg::GetFixedInterstRates {} => query::get_fixed_interest_ratio(deps),
         QueryMsg::GetTotalDebt { address } => query::get_total_debt(deps, address),
@@ -232,11 +232,7 @@ pub mod query {
 
     use super::*;
 
-    pub fn get_dyanamic_interest_rates(deps: Deps, addr: Addr) -> Result<QueryResponse, StdError> {
-        let token_info = TOKEN_INFO.load(deps.storage)?;
-        let mut balance = BALANCE_OF
-            .load(deps.storage, addr.clone())
-            .unwrap_or((Uint128::zero(), Uint128::zero()));
+    pub fn get_dyanamic_interest_rates(deps: Deps, addr: Addr,amount:Uint128) -> Result<QueryResponse, StdError> {
         // let contribution = balance / TOTAL_SUPPLY.load(deps.storage)?;
         // this represents the contribution of the user in the total balance of the vault
         // from this contribution we can calcualte the dyanamic rate , and it will change with the time period(each month simply)
@@ -251,14 +247,14 @@ pub mod query {
         //where the lambda would be replaced by the contribution value of the user
         // this wont be applicable for the starting users though as we would have to take the average of the contribution of the users in the vault
         // and then we can give the interest rate to the users based on the curve we have chosen
-        let contrib_inverse = TOTAL_SUPPLY.load(deps.storage)? / balance.0;
+        let contrib_inverse = TOTAL_SUPPLY.load(deps.storage)? / amount;
         let dynamic_interest =
             ONE_INT + Uint128::from(contrib_inverse) + contrib_inverse * contrib_inverse;
         to_binary(&dynamic_interest)
     }
 
     pub fn get_fixed_interest_ratio(deps: Deps) -> Result<QueryResponse, StdError> {
-        to_binary(&FIXED_RATE.load(deps.storage).unwrap_or(Uint128::new(10)))
+        to_binary(&FIXED_RATE.load(deps.storage).unwrap_or(Uint128::new(150)))
     }
 
     pub fn get_total_supply(deps: Deps) -> Result<QueryResponse, StdError> {
