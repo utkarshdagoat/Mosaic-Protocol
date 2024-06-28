@@ -48,7 +48,7 @@ export default function Dashboard() {
     <>
       <div className={`max-w-[64rem] w-80% h-screen space-y-8 mx-auto py-4 px-8 lg:px-4 ${styles.sleek_scrollbar}`}>
         <DashboardHeader />
-        <Button onClick={callContract}>Reddem</Button>
+        <Button onClick={callContract}>Redeem</Button>
         {vacant ? <VacantState /> : <OccupiedState />}
       </div>
     </>

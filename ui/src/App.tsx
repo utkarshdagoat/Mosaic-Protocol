@@ -7,6 +7,8 @@ import Dashboard from "@/pages/dashboard";
 import Onboarding from "./pages/onboarding";
 import Login from "./pages/login";
 import Connect from "./pages/connect";
+import Governance from "./pages/governance";
+
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
@@ -17,6 +19,7 @@ function App() {
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/connect" element={<Connect />} />
+          <Route path="/governance" element={<Governance />} />
         </Routes>
       </Router>
     </ThemeProvider>

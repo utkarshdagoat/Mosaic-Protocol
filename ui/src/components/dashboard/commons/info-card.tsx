@@ -20,7 +20,7 @@ export function InfoCard(props: InfoCardProps) {
       </CardTitle>
       <div className="flex flex-col gap-2">
         {props.type === "value" ? (
-          <p className="text-lg md:text-3xl font-bold text-foreground"><NumberTicker value={props.data as unknown as number} />  <span className="text-primary">{props.unit}</span></p>
+          <p className="text-lg md:text-3xl font-bold text-foreground"><NumberTicker value={Number(props.data)} />  <span className="text-primary">{props.unit}</span></p>
         ) : (
           props.data
         )}

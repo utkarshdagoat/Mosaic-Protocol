@@ -6,7 +6,7 @@ import { useState } from "react";
 import Heading from "@/components/dashboard/commons/heading";
 
 export default function OverviewCards() {
-  const [totalAssets, setTotalAssets] = useState("12500.45");
+  const [totalAssets, setTotalAssets] = useState("0");
   const [totalRepayments, setTotalRepayments] = useState("1045");
   const [creditScore, setCreditScore] = useState("470");
 
