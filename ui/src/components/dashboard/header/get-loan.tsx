@@ -51,8 +51,19 @@ export default function GetLoan() {
       }
 
       let tx = await CosmWasmClient.queryContractSmart(CONTRACT_ADDRESS, entrypoint);
-      console.log(tx);
-      setArchAmount(tx);
+      if (tx == 0) {
+        setArchAmount(USDAmount * 1.5)
+        console.log(ArchAmount)
+      }
+
+      else {
+        let k = (Math.E) ** (USDAmount) * tx
+        setArchAmount(k * 1.5 * USDAmount)
+        console.log(ArchAmount)
+      }
+
+
+
 
 
     }
